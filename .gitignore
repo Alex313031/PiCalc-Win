@@ -1,15 +1,16 @@
-# OS junk
+# OS Stuff
 .DS_Store
 .eslintcache
 .directory
 Thumbs.db
 thumbs.db
 
-# MSVS temp
+# MSVS Stuff
 *.vcxproj.user
+*.tlog
 .vs/
 
-# Build files
+# Built Files
 *.obj
 *.exe
 *.pdb
