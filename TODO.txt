@@ -1,0 +1,6 @@
+rename files
+move to src
+remove vcruntime dep
+make win xp compatible
+add more algorithms
+better text positioning

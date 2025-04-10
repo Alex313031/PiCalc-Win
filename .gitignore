@@ -1,0 +1,13 @@
+# OS junk
+.DS_Store
+.eslintcache
+Thumbs.db
+thumbs.db
+
+# Build files
+.vs/
+*.obj
+*.exe
+
+# Dolphin file manager
+.directory
