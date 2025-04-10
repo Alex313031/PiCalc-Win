@@ -15,32 +15,32 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="framework.h">
+    <ClInclude Include="src\framework.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="targetver.h">
+    <ClInclude Include="src\picalc.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Resource.h">
+    <ClInclude Include="src\chudnovsky.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="picalc.h">
+    <ClInclude Include="src\resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="chudnovsky.h">
+    <ClInclude Include="src\targetver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="picalc.cc">
+    <ClCompile Include="src\picalc.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="chudnovsky.cc">
+    <ClCompile Include="src\chudnovsky.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="PiCalc.rc">
+    <ResourceCompile Include="src\picalc.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
   </ItemGroup>
