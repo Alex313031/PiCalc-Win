@@ -1,13 +1,16 @@
 # OS junk
 .DS_Store
 .eslintcache
+.directory
 Thumbs.db
 thumbs.db
 
-# Build files
+# MSVS temp
+*.vcxproj.user
 .vs/
+
+# Build files
 *.obj
 *.exe
-
-# Dolphin file manager
-.directory
+*.pdb
+*.stamp
