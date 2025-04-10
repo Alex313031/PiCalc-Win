@@ -8,9 +8,11 @@ thumbs.db
 # MSVS Stuff
 *.vcxproj.user
 *.tlog
-.vs/
+*.vs/
+/.vs/
 
 # Built Files
+/out/
 *.obj
 *.exe
 *.pdb
