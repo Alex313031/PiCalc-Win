@@ -1,17 +1,22 @@
+#ifndef PICALC_H_
+#define PICALC_H_
+
 #pragma once
 
-#include <cmath>
-#include <cwchar>
-#include <iostream>
-#include <iomanip>
+#include "common.h"
+#include "chudnovsky.h"
 
-#include "framework.h"
-#include "resource.h"
+#if defined DCHECK && DCHECK == 1
+ static WCHAR kDCheckString[MAX_LOADSTRING];
+#else
+  static wchar_t kDCheckString[MAX_LOADSTRING];
+#endif // defined DCHECK && DCHECK == 1
 
-// Color constants.
-const COLORREF rgbRed    =  0x000000FF;
-const COLORREF rgbGreen  =  0x0000FF00;
-const COLORREF rgbYellow =  0x0000FFFF;
-const COLORREF rgbBlue   =  0x00FF0000;
-const COLORREF rgbBlack  =  0x00000000;
-const COLORREF rgbWhite  =  0x00FFFFFF;
+static wchar_t PiString[MAX_DECIMAL_PLACES];
+
+static LPCWSTR gdi_text;
+static LPCWSTR gdi_text2;
+
+extern void PaintHdc(HWND hWnd, HINSTANCE hInst);
+
+#endif  // PICALC_H_

@@ -72,19 +72,19 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>out\$(Platform)\$(Configuration)\</OutDir>
-    <IntDir>out\$(Platform)\work</IntDir>
+    <IntDir>out\$(Platform)\work\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>out\$(Platform)\$(Configuration)\</OutDir>
-    <IntDir>out\$(Platform)\work</IntDir>
+    <IntDir>out\$(Platform)\work\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>out\$(Platform)\$(Configuration)\</OutDir>
-    <IntDir>out\$(Platform)\work</IntDir>
+    <IntDir>out\$(Platform)\work\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>out\$(Platform)\$(Configuration)\</OutDir>
-    <IntDir>out\$(Platform)\work</IntDir>
+    <IntDir>out\$(Platform)\work\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -92,6 +92,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_WIN32;DEBUG;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -107,6 +108,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_WIN32;NDEBUG;_NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -123,6 +125,7 @@
       <PreprocessorDefinitions>WIN64;_WIN64;DEBUG;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <FloatingPointModel>Fast</FloatingPointModel>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -139,6 +142,7 @@
       <PreprocessorDefinitions>WIN64;_WIN64;NDEBUG;_NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <FloatingPointModel>Fast</FloatingPointModel>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -150,12 +154,15 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="src\framework.h" />
+    <ClInclude Include="src\main.h" />
+    <ClInclude Include="src\common.h" />
     <ClInclude Include="src\picalc.h" />
     <ClInclude Include="src\chudnovsky.h" />
     <ClInclude Include="src\resource.h" />
     <ClInclude Include="src\targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\main.cc" />
     <ClCompile Include="src\picalc.cc" />
     <ClCompile Include="src\chudnovsky.cc" />
   </ItemGroup>

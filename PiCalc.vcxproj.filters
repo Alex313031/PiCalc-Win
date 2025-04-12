@@ -18,7 +18,13 @@
     <ClInclude Include="src\framework.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\main.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="src\picalc.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\common.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\chudnovsky.h">
@@ -32,6 +38,9 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\main.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="src\picalc.cc">
       <Filter>Source Files</Filter>
     </ClCompile>

@@ -1,4 +1,3 @@
-
 #include "chudnovsky.h"
 
 // Function to calculate factorial
