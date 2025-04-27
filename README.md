@@ -3,7 +3,7 @@
 Experiment in making a GUI Pi Calculator app from scratch in C++ using native Win32 API.  
 Compatible with Windows XP.
 
-<img src="https://github.com/Alex313031/PiCalc-Win/blob/main/res/screenshot.png" width="480">
+<img src="https://github.com/Alex313031/PiCalc-Win/blob/main/screenshot.png" width="480">
 
 Uses:  
   - Selectable algorithm for computing π (Chudnovsky by default)  
