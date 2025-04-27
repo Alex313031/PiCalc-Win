@@ -1,20 +1,17 @@
 // main.cc : Defines the entry point for the application.
 
+#include "log.h"
 #include "main.h"
-#include "picalc.h"
 
-// The string that appears in the application's title bar.
-//static WCHAR szTitle[] = L"Windows Desktop Guided Tour Application";
-
-// The main window class name.
-//static const WCHAR szWindowClass[] = L"PiCalcWindow";
+// Global Variables:
+HINSTANCE hInst;  // current instance
 
 // Forward declarations of functions included in this code module:
-//ATOM                MyRegisterClass(HINSTANCE hInstance);
-//BOOL                InitInstance(HINSTANCE, int);
-//LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
-//INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
+ATOM                RegisterClass(HINSTANCE hInstance);
+BOOL                InitInstance(HINSTANCE, int);
+INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
 
+// Main entry point function, creates the GUI, equivalent to main() or _tmain()
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                       _In_opt_ HINSTANCE hPrevInstance,
                       _In_ LPWSTR lpCmdLine,
@@ -22,19 +19,36 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
   UNREFERENCED_PARAMETER(hPrevInstance);
   UNREFERENCED_PARAMETER(lpCmdLine);
 
-  // TODO: Place code here.
+  // Allow and allocate conhost
+  AllocConsole();
+  // File handler pointer to a dummy file, possibly an actual logfile
+  FILE* fNonExistFile = fDummyFile;
+  freopen_s(&fNonExistFile, "CONOUT$", "w", stdout);
+  freopen_s(&fNonExistFile, "CONOUT$", "w", stderr);
 
   // Initialize global strings
   LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
   LoadStringW(hInstance, IDC_PICALC, szWindowClass, MAX_LOADSTRING);
 
-  MyRegisterClass(hInstance);
+  // Log welcome message
+  std::wcout << "This is the PiCalc-Win logging console \n" << std::endl;
 
-  // Perform application initialization:
-  if (!InitInstance (hInstance, nCmdShow)) {
-    return FALSE;
+  // Log compiler #defines right before we register the Window Class
+  LogCompilerInfo(true);
+
+  // Register the Window
+  if (!RegisterClass(hInstance)) {
+    common::MakeErrorMessageBox(NULL, "Error", "Window Class Registration Failed!");
+    return false;
   }
 
+  // Perform application initialization:
+  if (!InitInstance(hInstance, nCmdShow)) {
+    std::wcerr << "InitInstance() failed!" << std::endl;
+    return false;
+  }
+
+  // Load  keyboard shortcuts
   HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_PICALC));
   MSG msg;
 
@@ -49,27 +63,27 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
   return (int) msg.wParam;
 }
 
-//  FUNCTION: MyRegisterClass()
+//  FUNCTION: RegisterClass(HINSTANCE)
 //
-//  PURPOSE: Registers the window class.
-ATOM MyRegisterClass(HINSTANCE hInstance) {
-  WNDCLASSEXW wcex;
+//  PURPOSE: Registers the window class (class here does not mean C++ class).
+ATOM RegisterClass(HINSTANCE hInstance) {
 
-  wcex.cbSize = sizeof(WNDCLASSEX);
+  winClassEx.cbSize = sizeof(WNDCLASSEX);
 
-  wcex.style          = CS_HREDRAW | CS_VREDRAW;
-  wcex.lpfnWndProc    = WndProc;
-  wcex.cbClsExtra     = 0;
-  wcex.cbWndExtra     = 0;
-  wcex.hInstance      = hInstance;
-  wcex.hIcon          = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_PICALC));
-  wcex.hCursor        = LoadCursor(nullptr, IDC_ARROW);
-  wcex.hbrBackground  = (HBRUSH)(COLOR_WINDOW+1);
-  wcex.lpszMenuName   = MAKEINTRESOURCEW(IDC_PICALC);
-  wcex.lpszClassName  = szWindowClass;
-  wcex.hIconSm        = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
+  winClassEx.style          = CS_HREDRAW | CS_VREDRAW;
+  winClassEx.lpfnWndProc    = WndProc;
+  winClassEx.cbClsExtra     = 0;
+  winClassEx.cbWndExtra     = 0;
+  winClassEx.hInstance      = hInstance;
+  winClassEx.hIcon          = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_PICALC));
+  winClassEx.hCursor        = LoadCursor(nullptr, IDC_ARROW);
+  winClassEx.hbrBackground  = (HBRUSH)(nullptr);
+  winClassEx.hbrBackground  = (HBRUSH)(COLOR_WINDOW);
+  winClassEx.lpszMenuName   = MAKEINTRESOURCEW(IDC_PICALC);
+  winClassEx.lpszClassName  = szWindowClass;
+  winClassEx.hIconSm        = LoadIcon(winClassEx.hInstance, MAKEINTRESOURCE(IDI_SMALL));
 
-  return RegisterClassExW(&wcex);
+  return RegisterClassExW(&winClassEx);
 }
 
 //   FUNCTION: InitInstance(HINSTANCE, int)
@@ -80,72 +94,44 @@ ATOM MyRegisterClass(HINSTANCE hInstance) {
 //     In this function, we save the instance handle in a global variable and
 //     create and display the main program window.
 BOOL InitInstance(HINSTANCE hInstance, int nCmdShow) {
-   hInst = hInstance; // Store instance handle in our global variable
+ // hInst = hInstance; // Store instance handle in our global variable
 
-   HWND hWnd = CreateWindowW(szWindowClass,
-                             szTitle,
-                             WS_TILEDWINDOW,
-                             CW_USEDEFAULT,
-                             CW_USEDEFAULT,
-                             640,
-                             480,
-                             nullptr,
-                             nullptr,
-                             hInstance,
-                             nullptr);
-
-   if (!hWnd) {
-     return FALSE;
-   }
-
-   ShowWindow(hWnd, nCmdShow);
-   UpdateWindow(hWnd);
-
-   return TRUE;
-}
-
-//  FUNCTION: WndProc(HWND, UINT, WPARAM, LPARAM)
-//
-//  PURPOSE: Processes messages for the main window.
-//
-//  WM_COMMAND  - process the application menu
-//  WM_PAINT    - Paint the main window
-//  WM_DESTROY  - post a quit message and return
-LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) {
-  switch (message) {
-    case WM_COMMAND:
-      {
-        int wmId = LOWORD(wParam);
-        // Parse the menu selections:
-        switch (wmId) {
-          case IDM_ABOUT:
-            DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
-            break;
-          case IDM_EXIT:
-            DestroyWindow(hWnd);
-            break;
-          default:
-            return DefWindowProc(hWnd, message, wParam, lParam);
-        }
-      }
-      break;
-    case WM_PAINT:
-      {
-        PaintHdc(hWnd, hInst);
-      }
-      break;
-    case WM_DESTROY:
-      PostQuitMessage(0);
-      break;
-    default:
-      return DefWindowProc(hWnd, message, wParam, lParam);
+  DWORD dwExStyle;
+  if (is_debug) {
+    dwExStyle = WS_EX_RIGHTSCROLLBAR;
+  } else {
+    dwExStyle = WS_EX_RIGHTSCROLLBAR;
   }
-  return 0;
+
+  // Create our window, really just a handle on win32
+  HWND hWnd = CreateWindowExW(dwExStyle,
+                              szWindowClass,
+                              szTitle,
+                              WinStyle::kTiled,
+                              kUseDefault,
+                              kUseDefault,
+                              640,
+                              480,
+                              nullptr,
+                              nullptr,
+                              hInstance,
+                              nullptr);
+
+  if (!hWnd || hWnd == NULL) {
+    common::MakeErrorMessageBox(hWnd, "Error", "Window Creation Failed!");
+    common::ExecuteNoNo(true);
+    return false;
+  } else {
+    ShowWindow(hWnd, nCmdShow);
+    UpdateWindow(hWnd);
+    return true;
+  }
 }
 
 // Message handler for about box.
-INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam) {
+INT_PTR CALLBACK main::AboutHandler(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam) {
   UNREFERENCED_PARAMETER(lParam);
+
   switch (message) {
     case WM_INITDIALOG:
       return (INT_PTR)TRUE;
@@ -159,4 +145,21 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam) {
       return (INT_PTR)FALSE;
   }
   return (INT_PTR)FALSE;
+}
+
+// Get hInstance from hWnd Window Handle
+HINSTANCE main::getHinst(HWND hWnd) {
+  if (hWnd) {
+    return hInst;
+  } else {
+    if (is_debug) {
+      bool trap = is_dcheck || test_trap;
+      common::ExecuteNoNo(trap);
+    }
+    return nullptr;
+  }
+}
+
+void main::MakeAboutDialogBox(HWND hWnd) {
+  DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, main::AboutHandler);
 }

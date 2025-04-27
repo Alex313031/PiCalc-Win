@@ -2,19 +2,29 @@
 // Microsoft Visual C++ generated include file.
 // Used by picalc.rc
 
+// Keep this 103
 #define IDS_APP_TITLE           103
 
 #define IDR_MAINFRAME           128
-#define IDD_PICALC_DIALOG       102
-#define IDD_ABOUTBOX            103
-#define IDM_ABOUT               104
-#define IDM_EXIT                105
+
+#define IDC_MYICON              2
 #define IDI_PICALC              107
 #define IDI_SMALL               108
 #define IDC_PICALC              109
-#define IDS_PICALC_DUMMY_GDI    173
-#define IDC_MYICON              2
 
+#define IDD_ABOUTBOX            131
+#define IDD_PICALC_DIALOG       132
+#define IDM_EXIT                133
+#define IDM_ABOUT               134
+#define IDM_HELP                135
+#define IDM_MESSAGEBOX          136
+#define IDM_FLOATDIV            137
+#define IDM_CHUDNOVSKY          138
+#define IDS_PICALC_DUMMY_GDI    200
+
+#define MAX_ID                  255
+
+// When not wanting to supply an IDC_
 #ifndef IDC_STATIC
 #define IDC_STATIC              -1
 #endif // IDC_STATIC

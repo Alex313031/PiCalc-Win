@@ -1,18 +1,25 @@
+#pragma once
+
 #ifndef CHUDNOVSKY_H_
 #define CHUDNOVSKY_H_
 
-#include <cmath>
 #include <cwchar>
 
-constexpr int iterations = 28;
+#include "common.h"
 
-// Simple factorial function
-long double factorial(long double num);
+namespace {
+  // Maximum times to run algorithm for
+  static constexpr int iterations = 28;
 
-// Chudnovsky Algorithm for Pi calculation
-long double chudnovsky(int iterations);
+  static constexpr float128 chudnovsky_pi =
+      3.141592653589793560087173318606801331043243408203125;
+}
 
-// Convert long double to wide character string
-void convertDoubleToWString();
+namespace algorithms {
+  // Chudnovsky Algorithm for Pi calculation
+  float128 chudnovsky(int iterations);
+  // Simple factorial function
+  float128 factorial(float128 num);
+};
 
 #endif // CHUDNOVSKY_H_

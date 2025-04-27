@@ -27,6 +27,9 @@
     <ClInclude Include="src\common.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\log.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="src\chudnovsky.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -38,6 +41,12 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\log.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\common.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="src\main.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
