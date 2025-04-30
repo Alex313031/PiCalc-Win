@@ -5,14 +5,12 @@
 // Keep this 103
 #define IDS_APP_TITLE           103
 
-#define IDR_MAINFRAME           128
-
 #define IDC_MYICON              2
 #define IDI_PICALC_WIN          107
 #define IDI_SMALL               108
 #define IDI_ABOUT               139
 #define IDC_PICALC_WIN          109
-
+#define IDR_MAINFRAME           128
 #define IDD_ABOUTBOX            131
 #define IDD_PICALC_DIALOG       132
 #define IDM_EXIT                133
@@ -27,7 +25,7 @@
 
 // When not wanting to supply an IDC_
 #ifndef IDC_STATIC
-#define IDC_STATIC              -1
+ #define IDC_STATIC              -1
 #endif // IDC_STATIC
 
 // Next default values for new objects
