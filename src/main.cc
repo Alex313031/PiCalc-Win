@@ -28,13 +28,13 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
   // Initialize global strings
   LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
-  LoadStringW(hInstance, IDC_PICALC, szWindowClass, MAX_LOADSTRING);
+  LoadStringW(hInstance, IDC_PICALC_WIN, szWindowClass, MAX_LOADSTRING);
 
   // Log welcome message
-  std::wcout << "This is the PiCalc-Win logging console \n" << std::endl;
+  base::LOG(INFO, "This is the PiCalc-Win logging console \n");
 
   // Log compiler #defines right before we register the Window Class
-  LogCompilerInfo(true);
+  common::LogCompilerInfo(true);
 
   // Register the Window
   if (!RegisterClass(hInstance)) {
@@ -44,12 +44,12 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
   // Perform application initialization:
   if (!InitInstance(hInstance, nCmdShow)) {
-    std::wcerr << "InitInstance() failed!" << std::endl;
+    std::wcerr << "InitInstance() failed!" << ENDL;
     return false;
   }
 
   // Load  keyboard shortcuts
-  HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_PICALC));
+  HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_PICALC_WIN));
   MSG msg;
 
   // Main message loop:
@@ -75,11 +75,11 @@ ATOM RegisterClass(HINSTANCE hInstance) {
   winClassEx.cbClsExtra     = 0;
   winClassEx.cbWndExtra     = 0;
   winClassEx.hInstance      = hInstance;
-  winClassEx.hIcon          = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_PICALC));
+  winClassEx.hIcon          = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_PICALC_WIN));
   winClassEx.hCursor        = LoadCursor(nullptr, IDC_ARROW);
   winClassEx.hbrBackground  = (HBRUSH)(nullptr);
   winClassEx.hbrBackground  = (HBRUSH)(COLOR_WINDOW);
-  winClassEx.lpszMenuName   = MAKEINTRESOURCEW(IDC_PICALC);
+  winClassEx.lpszMenuName   = MAKEINTRESOURCEW(IDC_PICALC_WIN);
   winClassEx.lpszClassName  = szWindowClass;
   winClassEx.hIconSm        = LoadIcon(winClassEx.hInstance, MAKEINTRESOURCE(IDI_SMALL));
 
@@ -161,5 +161,5 @@ HINSTANCE main::getHinst(HWND hWnd) {
 }
 
 void main::MakeAboutDialogBox(HWND hWnd) {
-  DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, main::AboutHandler);
+  DialogBoxW(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, main::AboutHandler);
 }

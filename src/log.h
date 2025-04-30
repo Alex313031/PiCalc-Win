@@ -3,16 +3,27 @@
 #ifndef LOG_H_
 #define LOG_H_
 
+#include <ctime>
+
 #include "common.h"
 
-constexpr int INFO = 0;
-constexpr int WARN = 1;
-#ifdef ERROR
-#undef ERROR
- constexpr int ERROR = 2;
-#endif
-constexpr int MAX_LOG = 3;
+enum Verbosity {
+  INFO,
+  WARN,
+  ERR,
+  MAX_LOG
+};
 
-void LOG(int log_level);
+static Verbosity LogLevel;
+
+static std::string GetTimestamp();
+
+namespace base {
+  void LOG(int log_level, std::string log_input);
+}
+
+namespace common {
+  void LogCompilerInfo(bool do_log);
+}
 
 #endif // LOG_H_

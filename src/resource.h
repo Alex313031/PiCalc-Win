@@ -8,9 +8,10 @@
 #define IDR_MAINFRAME           128
 
 #define IDC_MYICON              2
-#define IDI_PICALC              107
+#define IDI_PICALC_WIN          107
 #define IDI_SMALL               108
-#define IDC_PICALC              109
+#define IDI_ABOUT               139
+#define IDC_PICALC_WIN          109
 
 #define IDD_ABOUTBOX            131
 #define IDD_PICALC_DIALOG       132

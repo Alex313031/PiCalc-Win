@@ -3,65 +3,27 @@
 #ifndef COMMON_H_
 #define COMMON_H_
 
-#include <cmath>
 #include <iostream>
 #include <iomanip>
 #include <sstream>
 #include <string>
 
-#if __cplusplus >= 201703L
- // C++17 or higher
- #include <optional>
-#endif
-
-#ifndef NULLOPT
-#if __cplusplus >= 201703L
- #define NULLOPT std::nullopt
-#else
- #define NULLOPT nullptr
-#endif // __cplusplus >= 201703L
-#endif // NULLOPT
-
-#ifndef __FUNC__
- #define __FUNC__ __func__
-#endif // __FUNC__
-
 #ifdef __cpp_lib_string_view
-  // std::string_view is supported
-  #include <string_view>
+ // std::string_view is supported
+ #include <string_view>
 #endif
 
+#define NOTREACHED() \
+        std::string func_name(__FUNC__); \
+        NotReachedImpl(func_name);
+
+#include "constants.h"
 #include "framework.h"
 
 // Maximum .res loadstring length
 #ifndef MAX_LOADSTRING
  #define MAX_LOADSTRING MAX_PATH // Traditionally 255
 #endif // MAX_LOADSTRING
-
-// Maximum amount of places we can calculate to
-#ifndef MAX_DECIMAL_PLACES
- #define MAX_DECIMAL_PLACES 1024 // Cap at 1024 for sanity
-#endif // MAX_DECIMAL_PLACES
-
-// Debug CHECKs
-#ifdef _DCHECK
- #define DCHECK 1
-#else
- #define DCHECK 0
-#endif // _DCHECK
-
-// Define float128 differently depending on compiler
-#ifndef float128
- #define float128 long double
-#endif
-
-// Exit codes
-#ifndef SUCCESS_CODE
- #define SUCCESS_CODE 0
-#endif
-#ifndef ERROR_CODE
- #define ERROR_CODE 1
-#endif
 
 constexpr int SUCCESS = SUCCESS_CODE;
 constexpr int FAILED = ERROR_CODE;
@@ -88,9 +50,6 @@ constexpr int kUseDefault = CW_USEDEFAULT;
 namespace common {
   // 32 bit long pointer for 2^10
   constexpr LONG32 kKibi = MAX_DECIMAL_PLACES;
-
-  // Get Windows version info
-  std::string const GetOSVersion();
 
   // Convert std::string to std::wstring
   std::wstring StringToWstring(std::string in_string);
@@ -142,13 +101,9 @@ namespace TextStyle {
   constexpr COLORREF rgbWhite  = 0x00FFFFFF;
 }
 
-static int NT_MAJOR = 0;
-static int NT_MINOR = 0;
-static int NT_BUILD = 0;
-
 // Execute an assembly instruction to halt execution
 inline void AsmIllegalInstr();
 
-inline void NOTREACHED();
+void NotReachedImpl(std::string func_name);
 
 #endif // COMMON_H_

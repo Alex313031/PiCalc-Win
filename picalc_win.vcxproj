@@ -30,7 +30,7 @@
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
     <ProjectGuid>{dd16d21d-b126-4bb9-9b4d-b02c5ed660b6}</ProjectGuid>
-    <RootNamespace>PiCalc-Win</RootNamespace>
+    <RootNamespace>picalc_win</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.19041.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -124,7 +124,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>false</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_WIN32;DEBUG;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_WIN32;DEBUG;_DEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <DisableSpecificWarnings>%(DisableSpecificWarnings)</DisableSpecificWarnings>
@@ -142,7 +142,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>false</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_WIN32;DEBUG;_DEBUG;_DCHECK;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_WIN32;DEBUG;_DEBUG;_DCHECK;_WINDOWS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <DisableSpecificWarnings>%(DisableSpecificWarnings)</DisableSpecificWarnings>
@@ -162,7 +162,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>false</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_WIN32;NDEBUG;_NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_WIN32;NDEBUG;_NDEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <DisableSpecificWarnings>%(DisableSpecificWarnings)</DisableSpecificWarnings>
@@ -183,7 +183,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>false</SDLCheck>
-      <PreprocessorDefinitions>WIN64;_WIN64;DEBUG;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN64;_WIN64;DEBUG;_DEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
       <FloatingPointModel>Fast</FloatingPointModel>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -242,8 +242,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="src\framework.h" />
-    <ClInclude Include="src\constants.hpp" />
+    <ClInclude Include="src\constants.h" />
     <ClInclude Include="src\common.h" />
+    <ClInclude Include="src\base\os_info.h" />
     <ClInclude Include="src\log.h" />
     <ClInclude Include="src\main.h" />
     <ClInclude Include="src\picalc.h" />
@@ -253,6 +254,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\common.cc" />
+    <ClCompile Include="src\base\os_info.cc" />
     <ClCompile Include="src\log.cc" />
     <ClCompile Include="src\main.cc" />
     <ClCompile Include="src\picalc.cc" />

@@ -1,128 +1,9 @@
 // Includes functions that should be generally useful and
 // should be useable from anywhere.
 
+#pragma warning(disable : 4996)
+
 #include "common.h"
-
-std::string const common::GetOSVersion() {
-  // Human readable name
-  std::string OsVer;
-  // NT version number
-  std::string NtVer;
-  // For obscure versions or pre NT4 SP6
-  std::ostringstream debugStream;
-
-  // Use RtlGetVersion from winnt.h, not wdm.h
-  NTSTATUS(WINAPI *RtlGetVersion)(LPOSVERSIONINFOEXW);
-  // https://learn.microsoft.com/en-us/windows/win32/api/winnt/ns-winnt-osversioninfoexw
-  OSVERSIONINFOEXW osInfo;
-
-  // Make sure we get the dll
-  HMODULE NtDllModule = GetModuleHandleW(L"ntdll");
-  if (NtDllModule) {
-    *reinterpret_cast<FARPROC*>(&RtlGetVersion) =
-        GetProcAddress(NtDllModule, "RtlGetVersion");
-  } else {
-    RtlGetVersion = nullptr;
-  }
-
-  if (RtlGetVersion != nullptr) {
-    osInfo.dwOSVersionInfoSize = sizeof osInfo;
-    RtlGetVersion(&osInfo);
-    NT_MAJOR = osInfo.dwMajorVersion;
-    NT_MINOR = osInfo.dwMinorVersion;
-    NT_BUILD = osInfo.dwBuildNumber;
-  } else {
-    common::MakeErrorMessageBox(NULL, "RtlGetVersion", "RtlGetVersion was nullptr");
-  }
-
-  if (NT_MAJOR >=3 && NT_MAJOR <=10) {
-    NtVer = " " + std::to_string(NT_MAJOR) + "." + std::to_string(NT_MINOR) + "." + std::to_string(NT_BUILD);
-  }
-
-  if (NT_MAJOR == 4) {
-    // Known to be buggy on NT 4.0, and needs SP6 to work
-    switch (NT_MINOR) {
-      case 0:
-          OsVer = " (Windows NT 4.0)";
-          break;
-      default:
-          debugStream.str("");
-          debugStream.clear();
-          debugStream << " Unknown Windows"
-                      << NT_MAJOR << NT_MINOR << std::endl;
-          OsVer = debugStream.str();
-          break;
-    }
-  } else if (NT_MAJOR == 5) {
-    switch (NT_MINOR) {
-      case 0:
-          OsVer = " (Windows 2000)";
-          break;
-      case 1:
-          OsVer = " (Windows XP)";
-          break;
-      case 2:
-          OsVer = " (Windows Server 2003/XP x64)";
-          break;
-      default:
-          debugStream.str("");
-          debugStream.clear();
-          debugStream << " Unknown Windows"
-                      << NT_MAJOR << NT_MINOR << std::endl;
-          OsVer = debugStream.str();
-          break;
-    }
-  } else if (NT_MAJOR == 6) {
-    switch (NT_MINOR) {
-      case 0:
-          OsVer = " (Windows Vista or Server 2008)";
-          break;
-      case 1:
-          OsVer = " (Windows 7 or Server 2008 R2)";
-          break;
-      case 2:
-          OsVer = " (Windows 8 or Server 2012)";
-          break;
-      case 3:
-          OsVer = " (Windows 8.1 or Server 2012 R2)";
-          break;
-      default:
-          debugStream.str("");
-          debugStream.clear();
-          debugStream << " Unknown Windows"
-                      << NT_MAJOR << NT_MINOR << std::endl;
-          OsVer = debugStream.str();
-          break;
-    }
-  } else if (NT_MAJOR == 10) {
-    switch (NT_MINOR) {
-      case 0:
-          OsVer = " (Windows 10)";
-          break;
-      case 1:
-          OsVer = " (Windows 11)";
-          break;
-      default:
-          debugStream.str("");
-          debugStream.clear();
-          debugStream << " Unknown Windows "
-                      << NT_MAJOR << NT_MINOR << std::endl;
-          OsVer = debugStream.str();
-          break;
-    }
-  } else {
-    debugStream.str("");
-    debugStream.clear();
-    debugStream << " Unknown Windows";
-    OsVer = debugStream.str();
-    NtVer = " NULL";
-    NOTREACHED();
-  }
-
-  // String with both separated by a space
-  std::string OsNtVer = NtVer + OsVer;
-  return OsNtVer;
-}
 
 std::wstring common::StringToWstring(std::string in_string) {
   const std::wstring out_wstring = 
@@ -158,7 +39,7 @@ LPCWSTR common::ConvertStringToLPCWSTR(std::string in_string) {
   wchar_t* out_string = wcstrcpy_buffer;
 
   if (is_dcheck) {
-    std::wcerr << std::setprecision(MAX_LOADSTRING) << __FUNCSIG__ << " returned out_string " << out_string << std::endl;
+    std::wcerr << std::setprecision(MAX_LOADSTRING) << __FUNCSIG__ << " returned out_string " << out_string << ENDL;
   }
 
   // Return the pointer to the buffer as LPCWSTR
@@ -173,7 +54,7 @@ std::wstring common::ConvertDoubleToWstring(float128 to_convert) {
   std::wstring out_wstring = holding_buffer.str();
 
   if (is_dcheck) {
-    std::wcerr << std::setprecision(MAX_LOADSTRING) << __FUNCSIG__ << " returned out_wstring " << out_wstring << std::endl;
+    std::wcerr << std::setprecision(MAX_LOADSTRING) << __FUNCSIG__ << " returned out_wstring " << out_wstring << ENDL;
   }
 
   return out_wstring;
@@ -191,10 +72,10 @@ std::string common::GetEnvVariable(const char* env_var_name) {
   // Check if the environment variable was found
   if (result == SUCCESS || env_var_value != NULL || env_var_value != nullptr) {
     std::wcout << __FUNC__ << "() "
-               << env_var_name << " = " << env_var_value << std::endl;
+               << env_var_name << " = " << env_var_value << ENDL;
     return_string = env_var_value;
   } else {
-    std::wcerr << "Environment variable " << env_var_name << " not found." << std::endl;
+    std::wcerr << "Environment variable " << env_var_name << " not found." << ENDL;
     return_string = "NULL";
   }
   
@@ -218,7 +99,7 @@ int common::MakeInfoMessageBox(HWND hWnd, std::string msbox_title, std::string m
 
   switch (infoMsgBox) {
     case IDOK:
-      std::wcout << "Pressed OK in " << __FUNC__ << std::endl;
+      std::wcout << "Pressed OK in " << __FUNC__ << ENDL;
       break;
     default:
       break;
@@ -242,10 +123,10 @@ int common::MakeWarnMessageBox(HWND hWnd, std::string msbox_title, std::string m
 
   switch (warnMsgBox) {
     case IDOK:
-      std::wcout << "Pressed OK in " << __FUNC__ << std::endl;
+      std::wcout << "Pressed OK in " << __FUNC__ << ENDL;
       break;
     case IDCANCEL:
-      std::wcout << "Pressed Cancel in " << __FUNC__ << std::endl;
+      std::wcout << "Pressed Cancel in " << __FUNC__ << ENDL;
       break;
     default:
       break;
@@ -269,13 +150,13 @@ int common::MakeErrorMessageBox(HWND hWnd, std::string msbox_title, std::string 
 
   switch (errMsgBox) {
     case IDYES:
-      std::wcout << "Pressed Yes in " << __FUNC__ << std::endl;
+      std::wcout << "Pressed Yes in " << __FUNC__ << ENDL;
       break;
     case IDNO:
-      std::wcout << "Pressed No in " << __FUNC__ << std::endl;
+      std::wcout << "Pressed No in " << __FUNC__ << ENDL;
       break;
     case IDCANCEL:
-      std::wcout << "Pressed Cancel in " << __FUNC__ << std::endl;
+      std::wcout << "Pressed Cancel in " << __FUNC__ << ENDL;
       break;
     default:
       break;
@@ -290,12 +171,17 @@ int common::MakeErrorMessageBox(HWND hWnd, std::string msbox_title, std::string 
 void AsmIllegalInstr() {
 #ifdef _WIN64
   __debugbreak();
-#else // 32 bit assembly code
+#else
+#ifdef _WIN32
+  // 32 bit assembly code
   __asm {
     // Execute 0x0F, 0x0B
     UD2
   }
-#endif // defined _WIN64
+#else // ARM64
+  std::wcout << __FUNC__ << " not implemented for this architecure";
+#endif // _WIN32
+#endif // _WIN64
 }
 
 // Either kill program or halt and wait for debugger
@@ -309,9 +195,10 @@ void common::ExecuteNoNo(bool trap) {
 }
 
 // Dumb equivalent of Chromium's implementation
-void NOTREACHED() {
+void NotReachedImpl(std::string func_name) {
   // Whether we are fatal or not
   static constexpr bool notreached_trap = is_dcheck || test_trap;
-  std::wcout << "NOTREACHED()!" << std::endl;
+  std::wstring func_string = common::StringToWstring(func_name);
+  std::wcout << "NOTREACHED(): " << func_string << ENDL;
   common::ExecuteNoNo(notreached_trap);
 }

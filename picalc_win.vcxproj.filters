@@ -24,10 +24,13 @@
     <ClInclude Include="src\picalc.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\constants.hpp">
+    <ClInclude Include="src\constants.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\common.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\base\os_info.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\log.h">
@@ -48,6 +51,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\common.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\base\os_info.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\main.cc">

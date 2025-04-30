@@ -8,11 +8,26 @@
 // Exclude rarely-used stuff from Windows headers
 #ifdef _CONSOLE
  #define WIN32_LEAN_AND_MEAN
-#endif _CONSOLE
+#endif // _CONSOLE
 
 // To allow std::min and std::max
 // instead of MIN/MAX macros
-#define NOMINMAX
+#ifndef NOMINMAX
+ #define NOMINMAX
+#endif // NOMINMAX
+
+// Allow old C++ standards and insecure functions
+#ifndef _CRT_SECURE_NO_WARNINGS
+ #define _CRT_SECURE_NO_WARNINGS
+#endif // _CRT_SECURE_NO_WARNINGS
+
+// To use Microsoft specific preprocessor math constant macros
+#ifndef _USE_MATH_DEFINES
+ #undef _USE_MATH_DEFINES
+#endif // _USE_MATH_DEFINES
+#ifdef _USE_MATH_DEFINES
+ //#include <cmath>
+#endif // _USE_MATH_DEFINES
 
 // Must include this before windows.h for deprecated converters
 #include <codecvt>
@@ -22,13 +37,7 @@
 // Fail early if _WINDOWS isn't defined, since this is a GUI Win32 app
 #ifdef _WINDOWS
  #include <windows.h>
- // For Windows 2000/XP
- #include <psapi.h>
 #endif // _WINDOWS
-
-// To use Microsoft specific preprocessor math constant macros
-#define _USE_MATH_DEFINES
-#include <cmath>
 
 // C Runtime Header Files
 #include <errno.h>
@@ -37,6 +46,7 @@
 #include <malloc.h>
 #include <memory.h>
 #include <tchar.h>
+#include <time.h>
 
 // Always assume wide character support
 #ifndef UNICODE

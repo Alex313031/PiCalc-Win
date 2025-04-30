@@ -42,6 +42,4 @@ namespace Painter {
 // Included in this file but called by main.cc
 extern LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
-void LogCompilerInfo(bool do_log);
-
 #endif  // PICALC_H_

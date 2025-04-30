@@ -2,9 +2,11 @@
 
 #include <string>
 
+#include "picalc.h"
+
+#include "base/os_info.h"
 #include "common.h"
 #include "main.h"
-#include "picalc.h"
 #include "resource.h"
 
 // Forward declarations of functions included in this code module:
@@ -24,7 +26,7 @@ void Painter::PaintHdc(HWND hWnd, HINSTANCE hInst) {
   HDC hdc = BeginPaint(hWnd, &paintStruct);
   // Start logging as we are painting
   if (hdc) {
-    std::wcout << __FUNC__ << "() BeginPaint() started painting " << std::endl;
+    std::wcout << __FUNC__ << "() BeginPaint() started painting " << ENDL;
   }
 
   // Run the desired algorithm and store Pi result in to_convert
@@ -33,6 +35,7 @@ void Painter::PaintHdc(HWND hWnd, HINSTANCE hInst) {
   if (flag) {
     pi_result = algorithms::chudnovsky(iterations);
   } else {
+    pi_result = NULL;
     NOTREACHED();
   }
   // Convert result to string of max length kKibi (1024)
@@ -73,7 +76,10 @@ void Painter::PaintHdc(HWND hWnd, HINSTANCE hInst) {
   // To store result of GetOSVersion
   std::string os_ver_userf_string = "OS: ";
   os_ver_userf_string.append(common::GetEnvVariable("OS"));
-  os_ver_userf_string.append(common::GetOSVersion());
+  // String with both NT version and human name separated by a space
+  os_ver_userf_string.append(base::GetNTString());
+  os_ver_userf_string.append(base::GetOSName());
+
   static LPCWSTR WINNT_VERSION =
       common::ConvertStringToLPCWSTR(os_ver_userf_string);
   GDI_Text_2 = WINNT_VERSION;
@@ -96,7 +102,7 @@ void Painter::PaintHdc(HWND hWnd, HINSTANCE hInst) {
   SetBkMode(winDC, TRANSPARENT);
 
   // Center our text inside the viewport
-  kWinRect.left = 24;
+  kWinRect.left = 22;
   kWinRect.top = 64;
   // Print Pi result
   DrawTextW(winDC,
@@ -104,32 +110,27 @@ void Painter::PaintHdc(HWND hWnd, HINSTANCE hInst) {
               -1,
               &kWinRect,
               DT_LEFT | DT_WORD_ELLIPSIS | DT_NOCLIP);
-  // Move down 42 dips
-  kWinRect.top = 106;
-  SetTextColor(winDC, TextStyle::rgbRed);
+  kWinRect.top = 106; // Move down 42 dips
+  SetTextColor(winDC, TextStyle::rgbRed); // Set text color to red
+  // Print NT version info
   DrawTextW(winDC,
               GDI_Text_2,
               -1,
               &kWinRect,
-              // Don't respect carriage returns or window size
               DT_CENTER | DT_SINGLELINE | DT_NOCLIP);
-  // Move down 42 dips
-  kWinRect.top = 148;
+  kWinRect.top = 148; // Move down 42 dips
   SetTextColor(winDC, TextStyle::rgbRed);
   DrawTextW(winDC,
               GDI_Text_3,
               -1,
               &kWinRect,
-              // Don't respect carriage returns or window size
               DT_CENTER | DT_SINGLELINE | DT_NOCLIP);
-  // Move down 42 dips
-  kWinRect.top = 190;
-  SetTextColor(winDC, TextStyle::rgbRed);
+  kWinRect.top = 190; // Move down 42 dips
+  SetTextColor(winDC, TextStyle::rgbBlue); // Blue
   DrawTextW(winDC,
               GDI_Text_4,
               -1,
               &kWinRect,
-              // Don't respect carriage returns or window size
               DT_CENTER | DT_SINGLELINE | DT_NOCLIP);
   // Print debug message in center
   SetTextColor(winDC, TextStyle::rgbBlue);
@@ -137,7 +138,6 @@ void Painter::PaintHdc(HWND hWnd, HINSTANCE hInst) {
               GDI_Text_D,
               -1,
               &kWinRect,
-              // Don't respect carriage returns or window size
               DT_CENTER | DT_VCENTER | DT_SINGLELINE | DT_NOCLIP);
 
   // Delete GetWindowDC() object
@@ -145,7 +145,7 @@ void Painter::PaintHdc(HWND hWnd, HINSTANCE hInst) {
   // End painting to satisfy UpdateWindow()
   if (EndPaint(hWnd, &paintStruct)) {
     // Log EndPaint()
-    std::wcout << __FUNC__ << "() EndPaint() stopped painting " << std::endl;
+    std::wcout << __FUNC__ << "() EndPaint() stopped painting " << ENDL;
   }
 }
 
@@ -202,57 +202,4 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) 
       return DefWindowProcW(hWnd, message, wParam, lParam);
   }
   return 0;
-}
-
-void LogCompilerInfo(bool do_log) {
-  if (do_log) {
-    // Log some compiler preprocessor constants to know what type of build we have
-    if (is_debug && !is_dcheck) {
-      std::wcout << "Buildtype: DEBUG" << std::endl;
-    } else if (!is_debug && !is_dcheck) {
-      std::wcout << "Buildtype: RELEASE" << std::endl;
-    } else if (!is_debug && is_dcheck) {
-      std::wcout << "Buildtype: DCHECK RELEASE" << std::endl;
-    } else if (is_debug && is_dcheck) {
-      std::wcout << "Buildtype: DCHECK DEBUG" << std::endl;
-    } else {
-      NOTREACHED();
-    }
-#ifdef __STDCPP_THREADS__ // Whether threading is enabled
-    std::wcout << "__STDCPP_THREADS__ = " << __STDCPP_THREADS__ << std::endl;
-#else
-    std::wcout << "__STDCPP_THREADS__ = " << FALSE << std::endl;
-#endif // __STDCPP_THREADS__
-#ifdef __SSE42__ // Whether we compiled with /arch:SSE4.2 (or -msse4.2)
-    std::wcout << "__SSE42__ = " << __SSE42__ << std::endl;
-#else
-    std::wcout << "__SSE42__ = " << FALSE << std::endl;
-#endif // __SSE42__
-#ifdef __AVX__ // Whether we compiled with /arch:AVX (or -mavx)
-    std::wcout << "__AVX__ = " << __AVX__ << std::endl;
-#else
-    std::wcout << "__AVX__ = " << FALSE << std::endl;
-#endif // __AVX__
-#ifdef __AVX2__ // Whether we compiled with /arch:AVX2 (or -mavx2)
-    std::wcout << "__AVX2__ = " << __AVX2__ << std::endl;
-#else
-    std::wcout << "__AVX2__ = " << FALSE << std::endl;
-#endif // __AVX2__
-#ifdef __AVX512BW__ // Whether we compiled with /arch:AVX512 (or -mavx512bw)
-    std::wcout << "__AVX512BW__ = " << __AVX512BW__ << std::endl;
-#else
-    std::wcout << "__AVX512BW__ = " << FALSE << std::endl;
-#endif // __AVX512BW__
-#ifdef _CHAR_UNSIGNED // Whether char* is considered unsigned
-    std::wcout << "_CHAR_UNSIGNED = " << _CHAR_UNSIGNED << std::endl;
-#else
-    std::wcout << "_CHAR_UNSIGNED = " << FALSE << std::endl;
-#endif // _CHAR_UNSIGNED
-#ifdef __CLR_VER // The Common Language Runtime used to compile the app
-    std::wcout << "__CLR_VER = " << __CLR_VER << std::endl;
-#endif // __CLR_VER
-    std::wcout << L"\n";
-  } else {
-    NULLOPT;
-  }
 }
