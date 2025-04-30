@@ -5,7 +5,7 @@
 // Keep this 103
 #define IDS_APP_TITLE           103
 
-#define IDC_MYICON              2
+//#define IDC_MYICON              2
 #define IDI_PICALC_WIN          107
 #define IDI_SMALL               108
 #define IDI_ABOUT               139
