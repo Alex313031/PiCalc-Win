@@ -1,6 +1,8 @@
 // main.cc : Defines the entry point for the application.
 
 #include "log.h"
+#include "version.h"
+
 #include "main.h"
 
 // Global Variables:
@@ -9,10 +11,10 @@ HINSTANCE hInst;  // current instance
 // Forward declarations of functions included in this code module:
 ATOM                RegisterClass(HINSTANCE hInstance);
 BOOL                InitInstance(HINSTANCE, int);
-INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
+INT_PTR CALLBACK    AboutHandler(HWND, UINT, WPARAM, LPARAM);
 
 // Main entry point function, creates the GUI, equivalent to main() or _tmain()
-int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
+int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
                       _In_opt_ HINSTANCE hPrevInstance,
                       _In_ LPWSTR lpCmdLine,
                       _In_ int nCmdShow) {
@@ -21,6 +23,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
   // Allow and allocate conhost
   AllocConsole();
+
   // File handler pointer to a dummy file, possibly an actual logfile
   FILE* fNonExistFile = fDummyFile;
   freopen_s(&fNonExistFile, "CONOUT$", "w", stdout);
@@ -31,27 +34,52 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
   LoadStringW(hInstance, IDC_PICALC_WIN, szWindowClass, MAX_LOADSTRING);
 
   // Log welcome message
-  base::LOG(INFO, "This is the PiCalc-Win logging console \n");
+  std::wstring kVerString = common::GetVersionString();
+#if defined(_WIN64)
+  std::wstring bitness = L" 64 bit ";
+#else
+  std::wstring bitness = L" 32 bit ";
+#endif // defined(_WIN64)
+  std::wcout << "PiCalc-Win ver. "
+             << kVerString << bitness << ENDL;
+  std::wcout << "This is the PiCalc-Win logging console \n" << ENDL;
 
   // Log compiler #defines right before we register the Window Class
   common::LogCompilerInfo(true);
 
+  /* =============== Put any further main() logic after this line =============== */
+
+  LPWSTR cmdLine = GetCommandLineW();
+  if (cmdLine == nullptr || cmdLine == NULL) {
+    std::wcerr << "GetCommandLineW failed!" << ENDL;
+    return false;
+  }
+
+  /* long double gold = math::goldenRatio();
+  double mass = 100;
+  long double energy = math::EMC2(mass);
+  std::wcout << std::setprecision(MAX_LOADSTRING) << "Golden Ratio = " << gold << ENDL;
+  std::wcout << std::setprecision(MAX_LOADSTRING) << "Mass for " << mass
+                                                  << "Kg. = " << energy << "J. \n" << ENDL; */
+
+  /* =============== Put any further main() logic above this line =============== */
+
   // Register the Window
   if (!RegisterClass(hInstance)) {
     common::MakeErrorMessageBox(NULL, "Error", "Window Class Registration Failed!");
-    return false;
+    return FAILED;
   }
 
   // Perform application initialization:
   if (!InitInstance(hInstance, nCmdShow)) {
-    std::wcerr << "InitInstance() failed!" << ENDL;
-    return false;
+    base::LOG(ERROR, "InitInstance() failed!");
+    return FAILED;
   }
 
   // Load  keyboard shortcuts
   HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_PICALC_WIN));
-  MSG msg;
 
+  MSG msg;
   // Main message loop:
   while (GetMessage(&msg, nullptr, 0, 0)) {
     if (!TranslateAccelerator(msg.hwnd, hAccelTable, &msg)) {
@@ -108,8 +136,8 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow) {
                               szWindowClass,
                               szTitle,
                               WinStyle::kTiled,
-                              kUseDefault,
-                              kUseDefault,
+                              CW_USEDEFAULT,
+                              CW_USEDEFAULT,
                               640,
                               480,
                               nullptr,
@@ -141,8 +169,6 @@ INT_PTR CALLBACK main::AboutHandler(HWND hDlg, UINT message, WPARAM wParam, LPAR
         return (INT_PTR)TRUE;
       }
       break;
-    default:
-      return (INT_PTR)FALSE;
   }
   return (INT_PTR)FALSE;
 }
@@ -160,6 +186,6 @@ HINSTANCE main::getHinst(HWND hWnd) {
   }
 }
 
-void main::MakeAboutDialogBox(HWND hWnd) {
-  DialogBoxW(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, main::AboutHandler);
+bool main::MakeAboutDialogBox(HWND hWnd) {
+  return DialogBoxW(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, main::AboutHandler);
 }

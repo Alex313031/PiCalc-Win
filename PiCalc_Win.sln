@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.13.35806.99
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PiCalc-Win", "picalc_win.vcxproj", "{DD16D21D-B126-4BB9-9B4D-B02C5ED660B6}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PiCalc_Win", "PiCalc_Win.vcxproj", "{DD16D21D-B126-4BB9-9B4D-B02C5ED660B6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

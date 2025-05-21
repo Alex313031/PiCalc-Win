@@ -3,6 +3,11 @@
 
 #pragma warning(disable : 4996)
 
+#include <chrono>
+
+#include "log.h"
+#include "version.h"
+
 #include "common.h"
 
 std::wstring common::StringToWstring(std::string in_string) {
@@ -14,8 +19,8 @@ std::wstring common::StringToWstring(std::string in_string) {
 std::string common::WStringToString(std::wstring in_wstring) {
   std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> convertA;
 
-  //use converter (.to_bytes: wstr->str, .from_bytes: str->wstr)
-  std::string out_string = convertA.to_bytes( in_wstring );
+  // use converter (.to_bytes: wstr->str, .from_bytes: str->wstr)
+  std::string out_string = convertA.to_bytes(in_wstring);
   return out_string;
 }
 
@@ -82,6 +87,23 @@ std::string common::GetEnvVariable(const char* env_var_name) {
   return return_string;
 }
 
+namespace common {
+std::wstring GetVersionString() {
+  std::wstringstream VerStream;
+  VerStream << MAJOR_VERSION
+            << "."
+            << MINOR_VERSION
+            << "."
+            << BUILD_VERSION;
+  std::wstring kVerString = VerStream.str();
+  if (is_dcheck) {
+    std::wcout << __FUNC__ << "() returned "
+               << VERSION_STRING << ENDL;
+  }
+  return kVerString;
+}
+}
+
 int common::MakeInfoMessageBox(HWND hWnd, std::string msbox_title, std::string msbox_contents) {
   // Play sound
   MessageBeep(MB_ICONINFORMATION);
@@ -139,7 +161,9 @@ int common::MakeErrorMessageBox(HWND hWnd, std::string msbox_title, std::string 
   MessageBeep(MB_ICONERROR);
 
   LPCWSTR kErrorTitle = common::ConvertStringToLPCWSTR(msbox_title);
-  LPCWSTR kErrorMessage = common::ConvertStringToLPCWSTR(msbox_contents);
+  std::wstring wstr =
+      common::StringToWstring(msbox_contents) + L"\n" + L"(Press Yes to crash with debug log)";
+  LPCWSTR kErrorMessage = common::ConvertWstringToLPCWSTR(wstr);
   int errMsgBox = MessageBoxExW(
     hWnd,
     kErrorMessage,
@@ -151,6 +175,7 @@ int common::MakeErrorMessageBox(HWND hWnd, std::string msbox_title, std::string 
   switch (errMsgBox) {
     case IDYES:
       std::wcout << "Pressed Yes in " << __FUNC__ << ENDL;
+      common::ExecuteNoNo(FALSE);
       break;
     case IDNO:
       std::wcout << "Pressed No in " << __FUNC__ << ENDL;
@@ -169,27 +194,29 @@ int common::MakeErrorMessageBox(HWND hWnd, std::string msbox_title, std::string 
 // Intentionally execute an illegal instruction to kill the program
 // See http://ref.x86asm.net/coder32.html
 void AsmIllegalInstr() {
-#ifdef _WIN64
-  __debugbreak();
-#else
-#ifdef _WIN32
+#if defined(_WIN32) && !defined(_WIN64)
   // 32 bit assembly code
+  __asm int 3 // Execute int3 interrupt
   __asm {
-    // Execute 0x0F, 0x0B
-    UD2
-  }
+          UD2 // Execute 0x0F, 0x0B
+        }
+#elif defined(_WIN64) // x86_64
+  // MSVC-specific ud2
+  __debugbreak();
 #else // ARM64
   std::wcout << __FUNC__ << " not implemented for this architecure";
+  __debugbreak();
 #endif // _WIN32
-#endif // _WIN64
 }
 
 // Either kill program or halt and wait for debugger
 void common::ExecuteNoNo(bool trap) {
   if (trap) {
+    base::LOG(ERROR, "Halting execution now!");
     AsmIllegalInstr();
   } else {
     // Win32 only
+    base::LOG(ERROR, "Pausing execution for debugging...");
     system("pause");
   }
 }
@@ -201,4 +228,24 @@ void NotReachedImpl(std::string func_name) {
   std::wstring func_string = common::StringToWstring(func_name);
   std::wcout << "NOTREACHED(): " << func_string << ENDL;
   common::ExecuteNoNo(notreached_trap);
+}
+
+std::string base::GetTimestampA() {
+  auto time_now = std::chrono::system_clock::now();
+  std::time_t in_time_t = std::chrono::system_clock::to_time_t(time_now);
+
+  std::stringstream chronos_string;
+  chronos_string << std::put_time(std::localtime(&in_time_t),
+                                                 /* "%Y-%m-%d %H:%M:%S"); */
+                                                 "%T");
+
+  return chronos_string.str();
+}
+
+std::wstring base::GetTimestampW() {
+  std::string chronos_string = GetTimestampA();
+  std::wstring chronos_wstring =
+      common::StringToWstring(chronos_string);
+
+  return chronos_wstring;
 }

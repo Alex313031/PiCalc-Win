@@ -1,11 +1,14 @@
 // picalc.cc : Defines the painting logic for the application.
 
 #include <string>
+#include <sstream>
 
 #include "picalc.h"
 
 #include "base/os_info.h"
+#include "base/rand_util.h"
 #include "common.h"
+#include "log.h"
 #include "main.h"
 #include "resource.h"
 
@@ -26,14 +29,20 @@ void Painter::PaintHdc(HWND hWnd, HINSTANCE hInst) {
   HDC hdc = BeginPaint(hWnd, &paintStruct);
   // Start logging as we are painting
   if (hdc) {
-    std::wcout << __FUNC__ << "() BeginPaint() started painting " << ENDL;
+    std::ostringstream good_message;
+    std::wcout << WNL;
+    good_message << __FUNC__ << "() BeginPaint() started painting ";
+    base::LOG(INFO, good_message.str());
+    good_message.clear();
+  } else {
+    NOTREACHED();
   }
 
   // Run the desired algorithm and store Pi result in to_convert
   float128 pi_result;
   bool flag = true;
   if (flag) {
-    pi_result = algorithms::chudnovsky(iterations);
+    pi_result = algorithms::chudnovsky(max_iterations);
   } else {
     pi_result = NULL;
     NOTREACHED();
@@ -143,9 +152,14 @@ void Painter::PaintHdc(HWND hWnd, HINSTANCE hInst) {
   // Delete GetWindowDC() object
   DeleteDC(winDC);
   // End painting to satisfy UpdateWindow()
-  if (EndPaint(hWnd, &paintStruct)) {
+  if (!EndPaint(hWnd, &paintStruct)) {
+    common::MakeErrorMessageBox(hWnd, "Error", "EndPaint() failed!");
+  } else {
     // Log EndPaint()
-    std::wcout << __FUNC__ << "() EndPaint() stopped painting " << ENDL;
+    std::ostringstream end_message;
+    end_message << __FUNC__ << "() -> EndPaint() stopped painting ";
+    base::LOG(INFO, end_message.str());
+    end_message.clear();
   }
 }
 
@@ -164,7 +178,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) 
         // Parse the menu selections:
         switch (wmId) {
           case IDM_ABOUT:
-            main::MakeAboutDialogBox(hWnd);
+            if (!main::MakeAboutDialogBox(hWnd)) {
+              common::MakeErrorMessageBox(hWnd, "Error", "main::MakeAboutDialogBox failed.");
+            }
             break;
           case IDM_HELP:
             common::MakeInfoMessageBox(hWnd, "Help", "No Help so far");
@@ -174,13 +190,22 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) 
               PostQuitMessage(FAILED);
             }
             break;
+          case IDM_SAVETOFILE:
+            break;
           case IDM_MESSAGEBOX:
-            common::MakeInfoMessageBox(hWnd, "Info Box", "Everything OK");
-            common::MakeWarnMessageBox(hWnd, "Warning Box", "Everything OK?");
-            common::MakeErrorMessageBox(hWnd, "Error Box", "Something wrong happened");
+            common::MakeInfoMessageBox(hWnd, "Info Box", "Everything OK. \n Test message box function");
+            break;
+          case IDM_RANDNUM:
+            randutil::LogRand();
             break;
           case IDM_CHUDNOVSKY:
-            algorithms::chudnovsky(iterations);
+            algorithms::chudnovsky(max_iterations);
+            break;
+          case IDM_MONTECARLO:
+            algorithms::montecarlo(test_trials);
+            break;
+          case IDM_FLOATDIV:
+            algorithms::floatDivPi();
             break;
           default:
             return DefWindowProc(hWnd, message, wParam, lParam);

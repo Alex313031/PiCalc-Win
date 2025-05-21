@@ -4,6 +4,7 @@
 #define MAIN_H_
 
 #include <iostream>
+#include <shellapi.h>
 
 #include "common.h"
 #include "framework.h"
@@ -14,7 +15,7 @@ static WCHAR szTitle[MAX_LOADSTRING];  // The title bar text
 static WCHAR szWindowClass[MAX_LOADSTRING];   // the main window class name
 
 // Function exports
-int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
+int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
                       _In_opt_ HINSTANCE hPrevInstance,
                       _In_ LPWSTR lpCmdLine,
                       _In_ int nCmdShow);
@@ -32,7 +33,7 @@ namespace main {
 
   HINSTANCE getHinst(HWND hWnd);
 
-  void MakeAboutDialogBox(HWND hWnd);
+  bool MakeAboutDialogBox(HWND hWnd);
 }
 
 #endif  // MAIN_H_

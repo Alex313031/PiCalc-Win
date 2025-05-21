@@ -1,18 +1,12 @@
-#include <chrono>
 #include <iomanip> 
 #include <iostream> 
 
 #include "log.h"
 
-std::string GetTimestamp() {
-  auto time_now = std::chrono::system_clock::now();
-  std::time_t in_time_t = std::chrono::system_clock::to_time_t(time_now);
-
-  std::stringstream chronos_string;
-  chronos_string << std::put_time(std::localtime(&in_time_t),
-                                                 "%Y-%m-%d %H:%M:%S");
-
-  return chronos_string.str();
+std::wstring base::GetLogTimeStamp() {
+  std::wostringstream logstamp;
+  logstamp << L"[" << base::GetTimestampW() << L"]";
+  return logstamp.str();
 }
 
 void base::LOG(int log_level, std::string log_input) {
@@ -28,45 +22,76 @@ void base::LOG(int log_level, std::string log_input) {
 
   switch (LogLevel) {
     case INFO:
-        log_buffer << " INFO: "
+        log_buffer << GetLogTimeStamp() << " "
                    << log_output << ENDL;
         break;
     case WARN:
-        log_buffer << "WARNING: "
+        log_buffer << GetLogTimeStamp() << " WARNING: "
                    << log_output << ENDL;
         break;
     case ERR:
-        log_buffer << "ERROR: "
+        log_buffer << GetLogTimeStamp() << " ERROR: "
                    << log_output << ENDL;
         break;
     case MAX_LOG:
-        log_buffer << "Don't use MAX_LOG!"
+        log_buffer << " ERROR: Don't use MAX_LOG! "
                    << MAX_LOG << ENDL;
         break;
     default:
         NOTREACHED();
+  }
+  if (log_level == ERR || log_level == MAX_LOG) {
+    std::wcerr << log_buffer.str();
+  } else {
+    std::wcout << log_buffer.str();
+  }
+}
+
+void common::DumpMsvcConstants(bool do_dump) {
+  if (do_dump) {
+    std::wostringstream dump;
+    dump << std::setprecision(MAX_LOADSTRING);
+    dump << "M_E: " << M_E << NL;
+    dump << "M_LOG2E: " << M_LOG2E << NL;
+    dump << "M_LOG10E: " << M_LOG10E << NL;
+    dump << "M_LN2: " << M_LN2 << NL;
+    dump << "M_LN10: " << M_LN10 << NL;
+    dump << "M_PI: " << M_PI << NL;
+    dump << "M_PI_2: " << M_PI_2 << NL;
+    dump << "M_PI_4: " << M_PI_4 << NL;
+    dump << "M_1_PI: " << M_1_PI << NL;
+    dump << "M_2_PI: " << M_2_PI << NL;
+    dump << "M_2_SQRTPI: " << M_2_SQRTPI << NL;
+    dump << "M_SQRT2: " << M_SQRT2 << NL;
+    dump << "M_SQRT1_2: " << M_SQRT1_2 << NL;
+    std::wcout << dump.str() << ENDL;
+  } else {
+    NULLOPT;
   }
 }
 
 void common::LogCompilerInfo(bool do_log) {
   if (do_log) {
     // Log some compiler preprocessor constants to know what type of build we have
+    std::wstring kBuildType;
     if (is_debug && !is_dcheck) {
-      std::wcout << "Buildtype: DEBUG" << ENDL;
+      kBuildType = L"DEBUG";
     } else if (!is_debug && !is_dcheck) {
-      std::wcout << "Buildtype: RELEASE" << ENDL;
+      kBuildType = L"RELEASE";
     } else if (!is_debug && is_dcheck) {
-      std::wcout << "Buildtype: DCHECK RELEASE" << ENDL;
+      kBuildType = L"DCHECK RELEASE";
     } else if (is_debug && is_dcheck) {
-      std::wcout << "Buildtype: DCHECK DEBUG" << ENDL;
+      kBuildType = L"DCHECK DEBUG";
     } else {
       NOTREACHED();
     }
+    std::wcout << "Buildtype: " << kBuildType << ENDL;
 
     // Log MSVC compilation info
     std::wcout << "_MSC_VER = " << _MSC_VER << ENDL;
     std::wcout << "_MSC_FULL_VER = " << _MSC_FULL_VER << ENDL;
 
+    if (is_dcheck) {
 #ifdef __STDCPP_THREADS__ // Whether threading is enabled
     std::wcout << "__STDCPP_THREADS__ = " << __STDCPP_THREADS__ << ENDL;
 #else
@@ -103,7 +128,16 @@ void common::LogCompilerInfo(bool do_log) {
 #ifdef __CLR_VER // The Common Language Runtime used to compile the app
     std::wcout << "__CLR_VER = " << __CLR_VER << ENDL;
 #endif // __CLR_VER
+    std::wcout << "UINT_MAX: " << UINT_MAX << ENDL;
+    std::wcout << "ULONG_MAX: " << ULONG_MAX << ENDL;
+    std::wcout << "ULLONG_MAX: " << ULLONG_MAX << ENDL;
+    std::wcout << "SHRT_MAX: " << SHRT_MAX << ENDL;
+    std::wcout << "INT_MAX: " << INT_MAX << ENDL;
+    std::wcout << "LONG_MAX: " << LONG_MAX << ENDL;
+    std::wcout << "LLONG_MAX: " << LLONG_MAX << ENDL;
     std::wcout << L"\n";
+    }
+    DumpMsvcConstants(is_dcheck);
   } else {
     NULLOPT;
   }

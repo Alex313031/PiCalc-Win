@@ -6,7 +6,7 @@
 #define IDS_APP_TITLE           103
 
 //#define IDC_MYICON              2
-#define IDI_PICALC_WIN          107
+#define IDI_PICALC_WIN          2
 #define IDI_SMALL               108
 #define IDI_ABOUT               139
 #define IDC_PICALC_WIN          109
@@ -19,6 +19,9 @@
 #define IDM_MESSAGEBOX          136
 #define IDM_FLOATDIV            137
 #define IDM_CHUDNOVSKY          138
+#define IDM_RANDNUM             139
+#define IDM_SAVETOFILE          140
+#define IDM_MONTECARLO          141
 #define IDS_PICALC_DUMMY_GDI    200
 
 #define MAX_ID                  255

@@ -16,14 +16,17 @@ enum Verbosity {
 
 static Verbosity LogLevel;
 
-static std::string GetTimestamp();
-
 namespace base {
+  // Formatted log timestamp header
+  extern std::wstring GetLogTimeStamp();
+  // Baseline, printf style logger
   void LOG(int log_level, std::string log_input);
 }
 
 namespace common {
   void LogCompilerInfo(bool do_log);
+
+  void DumpMsvcConstants(bool do_dump);
 }
 
 #endif // LOG_H_

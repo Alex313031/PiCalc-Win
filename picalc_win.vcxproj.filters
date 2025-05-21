@@ -33,6 +33,9 @@
     <ClInclude Include="src\base\os_info.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\base\rand_util.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="src\log.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -40,6 +43,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\version.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\targetver.h">
@@ -50,10 +56,16 @@
     <ClCompile Include="src\log.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\constants.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="src\common.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\base\os_info.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\base\rand_util.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\main.cc">

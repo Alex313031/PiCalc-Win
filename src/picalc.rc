@@ -25,34 +25,17 @@ LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
 #pragma code_page(65001) // UTF-8
 
 // Macro to convert to string
-#if !defined(_STRINGIZE)
-#define _STRINGIZE(in) #in
-#define STRINGIZE(in) _STRINGIZE(in)
+#if !defined(_STRINGIZER) && !defined(STRINGIZE)
+#define _STRINGIZER(in) #in
+#define STRINGIZE(in) _STRINGIZER(in)
 #endif
+
+#include "version.h"
 
 /////////////////////////////////////////////////////////////////////////////
 //
 // Version Information
 //
-
-// Main version constant
-#ifndef _VERSION
-// Run stringizer above
-#define _VERSION(major,minor,build) STRINGIZE(major) "." STRINGIZE(minor) "." STRINGIZE(build)
-#endif
-
-// These next few lines are where we control version number and copyright year
-// Adhere to semver > semver.org
-#define MAJOR_VERSION 0
-#define MINOR_VERSION 3
-#define BUILD_VERSION 2
-
-#ifndef VERSION_STRING
-#define VERSION_STRING _VERSION(MAJOR_VERSION, MINOR_VERSION, BUILD_VERSION)
-#define ABOUT_VERSION "PiCalc ver. 0.3.2"
-#define ABOUT_COPYRIGHT "Copyright © 2025 Alex313031"
-#define LEGAL_COPYRIGHT "© 2025 Alex313031 (BSD-3)"
-#endif
 
 VS_VERSION_INFO VERSIONINFO
  FILEVERSION MAJOR_VERSION, MINOR_VERSION, BUILD_VERSION
@@ -131,14 +114,22 @@ IDC_PICALC_WIN MENU
 BEGIN
     POPUP "&File"
     BEGIN
-        MENUITEM "&MessageBox", IDM_MESSAGEBOX,
+        MENUITEM "&Save to File...", IDM_SAVETOFILE,
         MENUITEM "&Exit", IDM_EXIT
     END
     POPUP "&Algorithm"
     BEGIN
-        MENUITEM "&Chudnovsky", IDM_CHUDNOVSKY, CHECKED
+        MENUITEM "&Chudnovsky", IDM_CHUDNOVSKY,
         MENUITEM SEPARATOR
-        MENUITEM "&Float Division", IDM_FLOATDIV, INACTIVE
+        MENUITEM "&Monte Carlo", IDM_MONTECARLO,
+        MENUITEM SEPARATOR
+        MENUITEM "&Float Division", IDM_FLOATDIV,
+        
+    END
+    POPUP "&Dev"
+    BEGIN
+        MENUITEM "&MessageBox", IDM_MESSAGEBOX,
+        MENUITEM "&Random Number", IDM_RANDNUM,
     END
     POPUP "&Help"
     BEGIN
@@ -160,6 +151,7 @@ BEGIN
     "q",    IDM_EXIT,     CONTROL,  VIRTKEY
     "w",    IDM_EXIT,     CONTROL,  VIRTKEY
     "h",    IDM_HELP,     CONTROL,  VIRTKEY
+    "r",    IDM_RANDNUM,     CONTROL,  VIRTKEY
 END
 
 /////////////////////////////////////////////////////////////////////////////

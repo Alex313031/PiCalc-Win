@@ -7,15 +7,18 @@
 #include <iomanip>
 #include <sstream>
 #include <string>
+#include <vector>
 
 #ifdef __cpp_lib_string_view
  // std::string_view is supported
  #include <string_view>
 #endif
 
+#ifndef NOTREACHED
 #define NOTREACHED() \
         std::string func_name(__FUNC__); \
         NotReachedImpl(func_name);
+#endif // NOTREACHED
 
 #include "constants.h"
 #include "framework.h"
@@ -43,9 +46,6 @@ const bool test_trap = false;
  constexpr bool is_debug = false;
 #endif // defined DEBUG || defined DEBUG
 
-// Alias for default window positioning
-constexpr int kUseDefault = CW_USEDEFAULT;
-
 // Functions every module should be able to access
 namespace common {
   // 32 bit long pointer for 2^10
@@ -66,7 +66,10 @@ namespace common {
   // Convert long double to wide character string
   std::wstring ConvertDoubleToWstring(float128 to_convert);
 
+  // Get environment variable as 
   std::string GetEnvVariable(const char* env_var_name);
+
+  std::wstring GetVersionString();
 
   // Message box types
   int MakeInfoMessageBox(HWND hWnd, std::string msbox_title, std::string msbox_contents);
@@ -105,5 +108,12 @@ namespace TextStyle {
 inline void AsmIllegalInstr();
 
 void NotReachedImpl(std::string func_name);
+
+namespace base {
+  // Get current timestamp for log line
+  std::string GetTimestampA();
+  // Wide version of the above
+  std::wstring GetTimestampW();
+}
 
 #endif // COMMON_H_

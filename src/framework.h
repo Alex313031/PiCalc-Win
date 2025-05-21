@@ -23,10 +23,11 @@
 
 // To use Microsoft specific preprocessor math constant macros
 #ifndef _USE_MATH_DEFINES
- #undef _USE_MATH_DEFINES
+ #define _USE_MATH_DEFINES
 #endif // _USE_MATH_DEFINES
 #ifdef _USE_MATH_DEFINES
- //#include <cmath>
+ #include <math.h>
+ #include <cmath>
 #endif // _USE_MATH_DEFINES
 
 // Must include this before windows.h for deprecated converters
@@ -41,10 +42,11 @@
 
 // C Runtime Header Files
 #include <errno.h>
-#include <stdlib.h>
-#include <stdio.h>
+#include <float.h>
 #include <malloc.h>
 #include <memory.h>
+#include <stdlib.h>
+#include <stdio.h>
 #include <tchar.h>
 #include <time.h>
 

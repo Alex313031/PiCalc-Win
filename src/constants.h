@@ -3,6 +3,9 @@
 #ifndef CONSTANTS_H_
 #define CONSTANTS_H_
 
+#include <limits>
+#include <intrin.h>
+
 // C++17 or higher
 #if __cplusplus >= 201703L
  // To be able to use <codecvts>
@@ -35,9 +38,11 @@
 #endif // _DCHECK
 
 // Define float128 differently depending on compiler
-#ifndef float128
- #define float128 double
-#endif
+#ifndef __float128
+ typedef long double float128;
+#else
+ typedef __float128 float128;
+#endif // __float128
 
 // Exit codes
 #ifndef SUCCESS_CODE
@@ -51,5 +56,21 @@
 #ifndef ENDL
  #define ENDL std::endl
 #endif // ENDL
+#ifndef NL
+ // Newline
+ #define NL "\n"
+ // "wide" newline
+ #define WNL L"\n"
+#endif // ENDL
+
+constexpr long double c = 299792458.0; // Speed of light in m/s
+
+namespace math {
+ // Einstein's famous E=mc^2
+ long double EMC2(long double kilograms);
+
+ // Calculate the golden ratio directly
+ long double goldenRatio();
+}
 
 #endif // CONSTANTS_H_
