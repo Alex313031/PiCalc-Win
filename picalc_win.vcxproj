@@ -267,27 +267,31 @@
     <ClInclude Include="src\log.h" />
     <ClInclude Include="src\main.h" />
     <ClInclude Include="src\picalc.h" />
-    <ClInclude Include="src\chudnovsky.h" />
+    <ClInclude Include="src\algorithms\math_util.h" />
+    <ClInclude Include="src\algorithms\chudnovsky.h" />
+    <ClInclude Include="src\algorithms\montecarlo.h" />
+    <ClInclude Include="src\algorithms\algorithms.h" />
     <ClInclude Include="src\resource.h" />
     <ClInclude Include="src\version.h" />
     <ClInclude Include="src\targetver.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\constants.cc" />
     <ClCompile Include="src\common.cc" />
     <ClCompile Include="src\base\os_info.cc" />
     <ClCompile Include="src\base\rand_util.cc" />
     <ClCompile Include="src\log.cc" />
     <ClCompile Include="src\main.cc" />
     <ClCompile Include="src\picalc.cc" />
-    <ClCompile Include="src\chudnovsky.cc" />
+    <ClCompile Include="src\algorithms\math_util.cc" />
+    <ClCompile Include="src\algorithms\montecarlo.cc" />
+    <ClCompile Include="src\algorithms\chudnovsky.cc" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="src\picalc.rc" />
+    <ResourceCompile Include="src\res\picalc.rc" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="res\icon.ico" />
-    <Image Include="res\small.ico" />
+    <Image Include="src\res\icon.ico" />
+    <Image Include="src\res\small.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

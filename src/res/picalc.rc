@@ -1,6 +1,6 @@
 //Microsoft Visual C++ generated resource script.
 //
-#include "resource.h"
+#include "../resource.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
 /////////////////////////////////////////////////////////////////////////////
@@ -8,7 +8,7 @@
 // Generated from the TEXTINCLUDE resource.
 //
 #ifndef APSTUDIO_INVOKED
-#include "targetver.h"
+#include "../targetver.h"
 #endif
 //#ifndef _USING_V110_SDK71_
 //#define _USING_V110_SDK71_
@@ -30,7 +30,7 @@ LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
 #define STRINGIZE(in) _STRINGIZER(in)
 #endif
 
-#include "version.h"
+#include "../version.h"
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -57,7 +57,7 @@ BEGIN
         BEGIN
             VALUE "Comments", "https://github.com/Alex313031/PiCalc-Win"
             VALUE "CompanyName", "Alex313031"
-            VALUE "FileDescription", "Threaded GUI Pi Calculator for Windows"
+            VALUE "FileDescription", "GUI Pi Calculator for Windows"
             VALUE "FileVersion", VERSION_STRING
             VALUE "InternalName", "picalc_win"
             VALUE "LegalCopyright", LEGAL_COPYRIGHT
@@ -128,8 +128,9 @@ BEGIN
     END
     POPUP "&Dev"
     BEGIN
-        MENUITEM "&MessageBox", IDM_MESSAGEBOX,
+        MENUITEM "&MessageBox", IDM_MESSAGEBOXTEST,
         MENUITEM "&Random Number", IDM_RANDNUM,
+        MENUITEM "&Test math_util", IDM_TESTMATH,
     END
     POPUP "&Help"
     BEGIN

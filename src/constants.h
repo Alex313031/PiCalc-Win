@@ -65,12 +65,4 @@
 
 constexpr long double c = 299792458.0; // Speed of light in m/s
 
-namespace math {
- // Einstein's famous E=mc^2
- long double EMC2(long double kilograms);
-
- // Calculate the golden ratio directly
- long double goldenRatio();
-}
-
 #endif // CONSTANTS_H_

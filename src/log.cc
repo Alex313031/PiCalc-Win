@@ -1,6 +1,8 @@
-#include <iomanip> 
-#include <iostream> 
+#include <ctime>
+#include <iomanip>
+#include <iostream>
 
+#include "algorithms/math_util.h"
 #include "log.h"
 
 std::wstring base::GetLogTimeStamp() {
@@ -44,29 +46,6 @@ void base::LOG(int log_level, std::string log_input) {
     std::wcerr << log_buffer.str();
   } else {
     std::wcout << log_buffer.str();
-  }
-}
-
-void common::DumpMsvcConstants(bool do_dump) {
-  if (do_dump) {
-    std::wostringstream dump;
-    dump << std::setprecision(MAX_LOADSTRING);
-    dump << "M_E: " << M_E << NL;
-    dump << "M_LOG2E: " << M_LOG2E << NL;
-    dump << "M_LOG10E: " << M_LOG10E << NL;
-    dump << "M_LN2: " << M_LN2 << NL;
-    dump << "M_LN10: " << M_LN10 << NL;
-    dump << "M_PI: " << M_PI << NL;
-    dump << "M_PI_2: " << M_PI_2 << NL;
-    dump << "M_PI_4: " << M_PI_4 << NL;
-    dump << "M_1_PI: " << M_1_PI << NL;
-    dump << "M_2_PI: " << M_2_PI << NL;
-    dump << "M_2_SQRTPI: " << M_2_SQRTPI << NL;
-    dump << "M_SQRT2: " << M_SQRT2 << NL;
-    dump << "M_SQRT1_2: " << M_SQRT1_2 << NL;
-    std::wcout << dump.str() << ENDL;
-  } else {
-    NULLOPT;
   }
 }
 
@@ -128,16 +107,9 @@ void common::LogCompilerInfo(bool do_log) {
 #ifdef __CLR_VER // The Common Language Runtime used to compile the app
     std::wcout << "__CLR_VER = " << __CLR_VER << ENDL;
 #endif // __CLR_VER
-    std::wcout << "UINT_MAX: " << UINT_MAX << ENDL;
-    std::wcout << "ULONG_MAX: " << ULONG_MAX << ENDL;
-    std::wcout << "ULLONG_MAX: " << ULLONG_MAX << ENDL;
-    std::wcout << "SHRT_MAX: " << SHRT_MAX << ENDL;
-    std::wcout << "INT_MAX: " << INT_MAX << ENDL;
-    std::wcout << "LONG_MAX: " << LONG_MAX << ENDL;
-    std::wcout << "LLONG_MAX: " << LLONG_MAX << ENDL;
     std::wcout << L"\n";
     }
-    DumpMsvcConstants(is_dcheck);
+    util::DumpMathConstants(is_dcheck);
   } else {
     NULLOPT;
   }

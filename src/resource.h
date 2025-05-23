@@ -16,12 +16,13 @@
 #define IDM_EXIT                133
 #define IDM_ABOUT               134
 #define IDM_HELP                135
-#define IDM_MESSAGEBOX          136
+#define IDM_MESSAGEBOXTEST      136
 #define IDM_FLOATDIV            137
 #define IDM_CHUDNOVSKY          138
 #define IDM_RANDNUM             139
 #define IDM_SAVETOFILE          140
 #define IDM_MONTECARLO          141
+#define IDM_TESTMATH            142
 #define IDS_PICALC_DUMMY_GDI    200
 
 #define MAX_ID                  255

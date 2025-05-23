@@ -39,7 +39,16 @@
     <ClInclude Include="src\log.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\chudnovsky.h">
+    <ClInclude Include="src\algorithms\math_util.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\algorithms\chudnovsky.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\algorithms\montecarlo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\algorithms\algorithms.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\resource.h">
@@ -54,9 +63,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\log.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\constants.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\common.cc">
@@ -74,20 +80,26 @@
     <ClCompile Include="src\picalc.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\chudnovsky.cc">
+    <ClCompile Include="src\algorithms\math_util.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\algorithms\chudnovsky.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\algorithms\montecarlo.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="src\picalc.rc">
+    <ResourceCompile Include="src\res\picalc.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="res\small.ico">
+    <Image Include="src\res\small.ico">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="res\icon.ico">
+    <Image Include="src\res\icon.ico">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

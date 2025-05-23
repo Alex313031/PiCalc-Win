@@ -5,6 +5,7 @@
 
 #include "picalc.h"
 
+#include "algorithms/math_util.h"
 #include "base/os_info.h"
 #include "base/rand_util.h"
 #include "common.h"
@@ -157,7 +158,7 @@ void Painter::PaintHdc(HWND hWnd, HINSTANCE hInst) {
   } else {
     // Log EndPaint()
     std::ostringstream end_message;
-    end_message << __FUNC__ << "() -> EndPaint() stopped painting ";
+    end_message << __FUNC__ << "() -> EndPaint() stopped painting \n";
     base::LOG(INFO, end_message.str());
     end_message.clear();
   }
@@ -183,7 +184,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) 
             }
             break;
           case IDM_HELP:
-            common::MakeInfoMessageBox(hWnd, "Help", "No Help so far");
+            common::MakeInfoMessageBox(hWnd, "Help", "No Help so far!");
             break;
           case IDM_EXIT:
             if (!DestroyWindow(hWnd)) {
@@ -192,8 +193,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) 
             break;
           case IDM_SAVETOFILE:
             break;
-          case IDM_MESSAGEBOX:
-            common::MakeInfoMessageBox(hWnd, "Info Box", "Everything OK. \n Test message box function");
+          case IDM_MESSAGEBOXTEST:
+            common::MakeErrorMessageBox(hWnd, "Test Error Message Dialog Box",
+                                              "Everything OK. \n Test MessageBoxExW function");
             break;
           case IDM_RANDNUM:
             randutil::LogRand();
@@ -206,6 +208,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) 
             break;
           case IDM_FLOATDIV:
             algorithms::floatDivPi();
+            break;
+          case IDM_TESTMATH:
+            util::DumpMathConstants(false);
             break;
           default:
             return DefWindowProc(hWnd, message, wParam, lParam);

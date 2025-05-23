@@ -4,7 +4,7 @@
 #pragma once
 
 #include "common.h"
-#include "chudnovsky.h"
+#include "algorithms/algorithms.h"
 
 // String for testing DCHECK
 #if defined DCHECK && DCHECK == 1

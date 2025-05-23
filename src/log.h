@@ -3,8 +3,6 @@
 #ifndef LOG_H_
 #define LOG_H_
 
-#include <ctime>
-
 #include "common.h"
 
 enum Verbosity {
@@ -25,8 +23,6 @@ namespace base {
 
 namespace common {
   void LogCompilerInfo(bool do_log);
-
-  void DumpMsvcConstants(bool do_dump);
 }
 
 #endif // LOG_H_
