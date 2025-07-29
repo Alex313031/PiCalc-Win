@@ -1,0 +1,37 @@
+# MDI GUI App
+executable("picalc") {
+  configs -= [ "//build/config/win:console", ]
+  configs -= [ "//build/config/win:nominmax", ]
+
+  configs += [ "//build/config/win:windowed", ]
+
+  deps = [ ":picalc_sources" ]
+}
+
+config("nt5") {
+  libs = [
+    "iphlpapi.lib",
+    "powrprof.lib",
+    "wtsapi32.lib"
+  ]
+}
+
+source_set("picalc_sources") {
+  configs -= [ "//build/config/win:nominmax", ]
+
+  # Must explicitly set this for sources
+  configs += [ "//build/config/win:windowed", ]
+
+  configs += [ ":nt5", ]
+
+  sources = [
+    "common.h",
+    "framework.h",
+    "mdi_handler.cc",
+    "mdi_handler.h",
+    "picalc.rc",
+    "picalc_main.cc",
+    "picalc_main.h",
+    "resource.h"
+  ]
+}
