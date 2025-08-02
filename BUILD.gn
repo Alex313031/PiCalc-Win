@@ -1,5 +1,5 @@
 # MDI GUI App
-executable("picalc") {
+executable("picalc_win") {
   configs -= [ "//build/config/win:console", ]
   configs -= [ "//build/config/win:nominmax", ]
 
@@ -26,12 +26,18 @@ source_set("picalc_sources") {
 
   sources = [
     "common.h",
+    "common.cc",
+    "dialogs.h",
+    "dialogs.cc",
     "framework.h",
+    "globals.h",
     "mdi_handler.cc",
     "mdi_handler.h",
-    "picalc.rc",
     "picalc_main.cc",
     "picalc_main.h",
+    "picalc_win.rc",
     "resource.h"
   ]
+
+  deps = [ "//src/picalc_win/libpicalc:libpicalc" ]
 }

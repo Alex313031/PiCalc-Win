@@ -10,17 +10,19 @@
 #define APSTUDIO_HIDDEN_SYMBOLS
 #include "windows.h"
 #undef APSTUDIO_HIDDEN_SYMBOLS
-
+#include "winres.h"
 
 /////////////////////////////////////////////////////////////////////////////
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// English (Canada) resources
+// English (US) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENC)
 #ifdef _WIN32
-LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
+//LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
+LANGUAGE 9, 1 // ENG_US
+//#pragma code_page(65001) // UTF-8
 #pragma code_page(1252)
 #endif //_WIN32
 
@@ -30,6 +32,35 @@ LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
 #define STRINGIZE(in) _STRINGIZE(in)
 #endif
 
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+1 TEXTINCLUDE
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE
+BEGIN
+    "#ifndef APSTUDIO_INVOKED\r\n"
+    "#include ""targetver.h""\r\n"
+    "#endif\r\n"
+    "#define APSTUDIO_HIDDEN_SYMBOLS\r\n"
+    "#include ""windows.h""\r\n"
+    "#undef APSTUDIO_HIDDEN_SYMBOLS\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
 /////////////////////////////////////////////////////////////////////////////
 //
 // Version Information
@@ -37,21 +68,13 @@ LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
 
 // Main version constant
 #ifndef _VERSION
-// Run stringizer above
+// Run stringizer
 #define _VERSION(major,minor,build) STRINGIZE(major) "." STRINGIZE(minor) "." STRINGIZE(build)
 #endif
 
-// These next few lines are where we control version number and copyright year
-// Adhere to semver > semver.org
-#define MAJOR_VERSION 1
-#define MINOR_VERSION 9
-#define BUILD_VERSION 9
-
+// Convert to string to use later
 #ifndef VERSION_STRING
 #define VERSION_STRING _VERSION(MAJOR_VERSION, MINOR_VERSION, BUILD_VERSION)
-#define ABOUT_VERSION "PiCalc-Win ver. 1.9.9"
-#define ABOUT_COPYRIGHT "Copyright © 2025 Alex313031"
-#define LEGAL_COPYRIGHT "© 2025 Alex313031 (BSD-3)"
 #endif
 
 VS_VERSION_INFO VERSIONINFO
@@ -80,7 +103,7 @@ BEGIN
             VALUE "LegalCopyright", LEGAL_COPYRIGHT
             VALUE "LegalTrademarks", "https://github.com/Alex313031/PiCalc-Win/blob/main/LICENSE.md"
             VALUE "OriginalFilename", "picalc.exe"
-            VALUE "ProductName", "PiCalc Win"
+            VALUE "ProductName", "PiCalc-Win"
             VALUE "ProductVersion", VERSION_STRING
         END
     END
@@ -102,39 +125,6 @@ IDR_MAINFRAME    ICON         "icon.ico"
 IDI_PICALC       ICON         "icon.ico"
 IDI_SMALL        ICON         "small.ico"
 
-#ifdef APSTUDIO_INVOKED
-/////////////////////////////////////////////////////////////////////////////
-//
-// TEXTINCLUDE
-//
-1 TEXTINCLUDE
-BEGIN
-    "resource.h\0"
-END
-
-2 TEXTINCLUDE
-BEGIN
-    "#ifndef _USING_V110_SDK71_\r\n"
-    "#define _USING_V110_SDK71_\r\n"
-    "#endif\r\n"
-    "#ifndef APSTUDIO_INVOKED\r\n"
-    "#include ""targetver.h""\r\n"
-    "#endif\r\n"
-    "#define APSTUDIO_HIDDEN_SYMBOLS\r\n"
-    "#include ""windows.h""\r\n"
-    "#undef APSTUDIO_HIDDEN_SYMBOLS\r\n"
-    "\0"
-END
-
-3 TEXTINCLUDE DISCARDABLE 
-BEGIN
-    "\r\n"
-    "\0"
-END
-
-#endif    // APSTUDIO_INVOKED
-
-
 /////////////////////////////////////////////////////////////////////////////
 //
 // Menu
@@ -144,24 +134,33 @@ IDR_MAINMENU MENU DISCARDABLE
 BEGIN
     POPUP "&File"
     BEGIN
-        MENUITEM "&New",                        ID_FILE_NEW
-        MENUITEM "&Open...",                    ID_FILE_OPEN
-        MENUITEM "Save &As...",                 ID_FILE_SAVEAS, GRAYED
+        MENUITEM "&New",         ID_FILE_NEW
+        MENUITEM "&Open...",     ID_FILE_OPEN
+        MENUITEM "&Save &As...", ID_FILE_SAVEAS, GRAYED
         MENUITEM SEPARATOR
-        MENUITEM "&Close",                      ID_FILE_CLOSE, GRAYED
+        MENUITEM "&Close",       ID_FILE_CLOSE, GRAYED
         MENUITEM SEPARATOR
-        MENUITEM "E&xit",                       ID_FILE_EXIT
+        MENUITEM "&Exit",        IDM_EXIT
     END
-    POPUP "&Edit", GRAYED
+    POPUP "&Edit",               GRAYED
     BEGIN
-        MENUITEM "C&ut",                        ID_EDIT_CUT
-        MENUITEM "&Copy",                       ID_EDIT_COPY
-        MENUITEM "&Paste",                      ID_EDIT_PASTE
+        MENUITEM "&Cut",         ID_EDIT_CUT
+        MENUITEM "&Copy",        ID_EDIT_COPY
+        MENUITEM "&Paste",       ID_EDIT_PASTE
     END
-    POPUP "&Window", GRAYED
+    POPUP "&Window",             GRAYED
     BEGIN
-        MENUITEM "&Tile",                       ID_WINDOW_TILE
-        MENUITEM "&Cascade",                    ID_WINDOW_CASCADE
+        MENUITEM "&Tile",        ID_WINDOW_TILE
+        MENUITEM "&Cascade",     ID_WINDOW_CASCADE
+    END
+    POPUP "&Help"
+    BEGIN
+        MENUITEM "&Help",        IDM_HELP,
+        MENUITEM "&About",       IDM_ABOUT,
+    END
+    POPUP "&?"                   HELP
+    BEGIN
+        MENUITEM "&Help",        IDM_HELP,
     END
 END
 
@@ -176,14 +175,56 @@ BEGIN
    IDC_PICALC            "PICALC_WINCLASS"
 END
 
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_ABOUT DIALOGEX 0, 0, 147, 67
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "About PiCalc-Win"
+CHARACTERISTICS 17062
+FONT 8, "MS Shell Dlg"
+BEGIN
+    ICON            IDI_PICALC, IDC_STATIC, 7, 7, 20, 20, SS_ICON
+    LTEXT           ABOUT_VERSION, IDC_STATIC, 34, 7, 98, 8
+    LTEXT           ABOUT_COPYRIGHT, IDC_STATIC, 34, 17, 86, 8
+    DEFPUSHBUTTON   "OK", IDOK, 90, 46, 50, 14, WS_GROUP
+END
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Keyboard Accelerators
+//
+
+IDR_MAINMENU ACCELERATORS
+BEGIN
+    "/",  IDM_ABOUT, ASCII, ALT
+    //"?",  IDM_HELP,  VIRTKEY, ALT, NOINVERT
+    //"/",  IDM_HELP,  VIRTKEY, CONTROL, NOINVERT
+END
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO
+BEGIN
+    IDD_ABOUT, DIALOG
+    BEGIN
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
 #endif    // English resources
 
 #ifndef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
 //
-// Generated from the TEXTINCLUDE resource.
+// Generated from the TEXTINCLUDE 3 resource.
 //
 
 /////////////////////////////////////////////////////////////////////////////
 #endif    // not APSTUDIO_INVOKED
-

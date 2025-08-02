@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef FRAMEWORK_H_
 #define FRAMEWORK_H_
 
@@ -26,6 +28,7 @@
 #ifdef _WINDOWS
  #include <windows.h>
  #include <commctrl.h>
+ #include <commdlg.h>
  // For Windows 2000/XP
  #include <psapi.h>
 #endif // _WINDOWS

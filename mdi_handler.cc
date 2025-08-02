@@ -1,5 +1,13 @@
 #include "mdi_handler.h"
 
+#include "libpicalc/libpicalc.h"
+
+#include "dialogs.h"
+#include "globals.h"
+#include "resource.h"
+
+HWND g_hMDIClient = NULL;
+
 BOOL LoadTextFileToEdit(HWND hEdit, LPCTSTR pszFileName) {
   HANDLE hFile;
   BOOLEAN bSuccess = FALSE;
@@ -44,14 +52,12 @@ void DoFileOpen(HWND hwnd) {
   ofn.nMaxFile = MAX_PATH;
   ofn.Flags = OFN_EXPLORER | OFN_FILEMUSTEXIST | OFN_HIDEREADONLY;
   ofn.lpstrDefExt = _T("txt");
-
   if (GetOpenFileName(&ofn)) {
     HWND hEdit = GetDlgItem(hwnd, IDC_CHILD_EDIT);
     if (LoadTextFileToEdit(hEdit, szFileName)) {
-      HWND mainWin = getMainHwnd();
-      SendDlgItemMessage(mainWin, IDC_MAIN_STATUS, SB_SETTEXT, 0,
+      SendDlgItemMessage(g_hMainWindow, IDC_MAIN_STATUS, SB_SETTEXT, 0,
                          (LPARAM)_T("Opened..."));
-      SendDlgItemMessage(mainWin, IDC_MAIN_STATUS, SB_SETTEXT, 1,
+      SendDlgItemMessage(g_hMainWindow, IDC_MAIN_STATUS, SB_SETTEXT, 1,
                          (LPARAM)szFileName);
 
       SetWindowText(hwnd, szFileName);
@@ -62,6 +68,9 @@ void DoFileOpen(HWND hwnd) {
 HWND CreateNewMDIChild(HWND hMDIClient) {
   MDICREATESTRUCT mcs;
   HWND hChild = NULL;
+
+  const float128 pi = algorithms::chudnovsky(max_iterations);
+  std::wcout << pi << ENDL;
 
   mcs.szTitle = szEmptyFileName;
   mcs.szClass = g_szChildClassName;
@@ -152,7 +161,7 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) 
 
       SendMessage(hStatus, SB_SETPARTS, sizeof(statwidths) / sizeof(int),
                   (LPARAM)statwidths);
-      SendMessage(hStatus, SB_SETTEXT, 0, (LPARAM)_T("Hi there :)"));
+      SendMessage(hStatus, SB_SETTEXT, 0, (LPARAM)_T("Status"));
     } break;
     case WM_SIZE: {
       HWND hTool;
@@ -195,11 +204,11 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) 
       DestroyWindow(hwnd);
       break;
     case WM_DESTROY:
-      PostQuitMessage(0);
+      PostQuitMessage(STATUS_GOOD);
       break;
     case WM_COMMAND:
       switch (LOWORD(wParam)) {
-        case ID_FILE_EXIT:
+        case IDM_EXIT:
           PostMessage(hwnd, WM_CLOSE, 0, 0);
           break;
         case ID_FILE_NEW:
@@ -223,6 +232,11 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) 
         case ID_WINDOW_CASCADE:
           SendMessage(g_hMDIClient, WM_MDICASCADE, 0, 0);
           break;
+        case IDM_HELP:
+          break;
+        case IDM_ABOUT:
+          ShowAboutDialog(hwnd);
+          break;
         default: {
           if (LOWORD(wParam) >= ID_MDI_FIRSTCHILD) {
             DefFrameProc(hwnd, g_hMDIClient, WM_COMMAND, wParam, lParam);
@@ -240,12 +254,4 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) 
       return DefFrameProc(hwnd, g_hMDIClient, msg, wParam, lParam);
   }
   return 0;
-}
-
-HWND getChildHwnd() {
-  if (g_hMDIClient != NULL) {
-    return g_hMDIClient;
-  } else {
-    return nullptr;
-  }
 }

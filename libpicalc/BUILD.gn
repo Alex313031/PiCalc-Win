@@ -1,0 +1,31 @@
+# Copyright 2014 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("//build/config/precompiled_header.gni")
+
+# Ensure precompiled headers work
+precompiled_header("precompiled") {
+  precompiled_header = "stdafx.h"
+  precompiled_source = "stdafx.cc"
+}
+
+# Test that .so, .dll, and .dylib files can be built
+shared_library("libpicalc") {
+  configs -= [ "//build/config/win:nominmax", ]
+
+  # Must explicitly set this for sources
+  configs += [ "//build/config/win:windowed", ]
+
+  configs += [ "//src/picalc_win:nt5", ]
+
+  configs += [
+    ":precompiled",
+  ]
+
+  sources = [
+    "libpicalc.cc",
+    "libpicalc.h",
+    "component_export.h",
+  ]
+}

@@ -7,12 +7,6 @@
 
 #include "common.h"
 #include "framework.h"
-#include "resource.h"
-
-/* Globals */
-
-// Child window handle
-static HWND g_hMDIClient = NULL;
 
 // Child window class
 const TCHAR g_szChildClassName[] = _T("PiCalcMDIWndClass");
@@ -28,7 +22,5 @@ void DoFileOpen(HWND hwnd);
 HWND CreateNewMDIChild(HWND hMDIClient);
 
 LRESULT CALLBACK MainWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
-
-HWND getChildHwnd();
 
 #endif // MDI_HANDLER_H_

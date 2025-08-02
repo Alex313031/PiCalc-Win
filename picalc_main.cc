@@ -1,5 +1,14 @@
 #include "picalc_main.h"
 
+#include "common.h"
+#include "globals.h"
+#include "resource.h"
+
+/* Global instance handle */
+HINSTANCE g_hInstance = NULL;
+
+HWND g_hMainWindow = NULL;
+
 BOOL SaveTextFileFromEdit(HWND hEdit, LPCTSTR pszFileName) {
   HANDLE hFile;
   BOOLEAN bSuccess = FALSE;
@@ -34,7 +43,7 @@ BOOL SaveTextFileFromEdit(HWND hEdit, LPCTSTR pszFileName) {
 
 void DoFileSave(HWND hwnd) {
   OPENFILENAME ofn;
-  TCHAR szFileName[MAX_PATH] = _T("");
+  WCHAR szFileName[MAX_PATH] = L"";
 
   ZeroMemory(&ofn, sizeof(ofn));
 
@@ -61,6 +70,34 @@ void DoFileSave(HWND hwnd) {
 }
 
 LRESULT CALLBACK MDIChildWndProc(HWND hwnd,
+                                 UINT msg,
+                                 WPARAM wParam,
+                                 LPARAM lParam) {
+  switch (msg) {
+    case WM_CREATE: {
+    } break;
+    case WM_MDIACTIVATE: {
+    } break;
+    case WM_COMMAND:
+      break;
+    case WM_SIZE: {
+      HWND hEdit;
+      RECT rcClient;
+
+      // Calculate remaining height and size edit
+      GetClientRect(hwnd, &rcClient);
+
+      hEdit = GetDlgItem(hwnd, IDC_CHILD_EDIT);
+      SetWindowPos(hEdit, NULL, 0, 0, rcClient.right, rcClient.bottom,
+                   SWP_NOZORDER);
+    }
+    default:
+      return DefMDIChildProc(hwnd, msg, wParam, lParam);
+  }
+  return 0;
+}
+
+LRESULT CALLBACK MDIChildWndProcOld(HWND hwnd,
                                  UINT msg,
                                  WPARAM wParam,
                                  LPARAM lParam) {
@@ -151,12 +188,12 @@ BOOL SetUpMDIChildWindowClass(HINSTANCE hInstance) {
   mdiwc.cbClsExtra = 0;
   mdiwc.cbWndExtra = 0;
   mdiwc.hInstance = hInstance;
-  mdiwc.hIcon = LoadIcon(NULL, IDI_APPLICATION);
-  mdiwc.hCursor = LoadCursor(NULL, IDC_ARROW);
+  mdiwc.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_PICALC));
+  mdiwc.hCursor = LoadCursor(nullptr, IDC_ARROW);
   mdiwc.hbrBackground = (HBRUSH)(COLOR_3DFACE + 1);
   mdiwc.lpszMenuName = NULL;
   mdiwc.lpszClassName = g_szChildClassName;
-  mdiwc.hIconSm = LoadIcon(NULL, IDI_APPLICATION);
+  mdiwc.hIconSm = LoadIcon(mdiwc.hInstance, MAKEINTRESOURCE(IDI_SMALL));
 
   if (!RegisterClassEx(&mdiwc)) {
     MessageBox(0, _T("Could not register MDIChild Window"), _T("Uh Oh..."),
@@ -212,6 +249,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow) {
    if (!hwnd || hwnd == NULL) {
      return false;
    } else {
+     g_hMainWindow = hwnd;
      ShowWindow(hwnd, nCmdShow);
      UpdateWindow(hwnd);
    }
@@ -219,11 +257,13 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow) {
    return true;
 }
 
-int WINAPI _tWinMain(HINSTANCE hInstance,
+int WINAPI wWinMain(HINSTANCE hInstance,
                      HINSTANCE hPrevInstance,
                      LPTSTR lpCmdLine,
                      int nCmdShow) {
   UNREFERENCED_PARAMETER(hPrevInstance);
+  /* Assign global HINSTANCE */
+  g_hInstance = hInstance;
   MSG Msg;
 
   InitCommonControls();
@@ -239,32 +279,33 @@ int WINAPI _tWinMain(HINSTANCE hInstance,
   freopen_s(&fNonExistFile, "CONOUT$", "w", stderr);
 
   // Register the window class
-  if (RegisterMainClass(hInstance) == kRegClassErr) {
+  if (RegisterMainClass(g_hInstance) == kRegClassErr) {
     MessageBox(NULL, _T("Window Registration Failed!"), _T("Error!"),
                MB_ICONEXCLAMATION | MB_OK);
     constexpr int return_code = STATUS_BAD;
     return handleReturnCode(return_code);
   }
 
-  // And the child window class
-  if (!SetUpMDIChildWindowClass(hInstance)) {
-    constexpr int return_code = STATUS_BAD;
-    return handleReturnCode(return_code);
-  }
-
   // Perform application initialization:
-  if (!InitInstance(hInstance, nCmdShow)) {
+  if (!InitInstance(g_hInstance, nCmdShow)) {
     MessageBox(NULL, _T("Window Creation Failed!"), _T("Error!"),
                MB_ICONEXCLAMATION | MB_OK);
     constexpr int return_code = STATUS_BAD;
     return handleReturnCode(return_code);
   } else {
-    std::wcout << "Welcome to PiCalc-Win v." << std::endl;
+    std::wcout << "Welcome to PiCalc-Win v." << getVersionString() << std::endl;
+    HWND printHwnd = getMainHwnd();
+    std::wcout << "getMainHwnd() reported " << printHwnd << std::endl;
+  }
+
+  // And the child window class
+  if (!SetUpMDIChildWindowClass(g_hInstance)) {
+    constexpr int return_code = STATUS_BAD;
+    return handleReturnCode(return_code);
   }
 
   while (GetMessage(&Msg, NULL, 0, 0) > 0) {
-    HWND hMDIClient = getChildHwnd();
-    if (!TranslateMDISysAccel(hMDIClient, &Msg)) {
+    if (!TranslateMDISysAccel(g_hMDIClient, &Msg)) {
       TranslateMessage(&Msg);
       DispatchMessage(&Msg);
     }
@@ -283,6 +324,7 @@ HWND getMainHwnd() {
   if (g_hMainWindow != NULL) {
     return g_hMainWindow;
   } else {
+    std::wcout << "g_hMainWindow was NULL!" << std::endl;
     return nullptr;
   }
 }
