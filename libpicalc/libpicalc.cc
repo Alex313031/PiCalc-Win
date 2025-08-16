@@ -31,6 +31,7 @@ float128 oldchudnovsky(int iterations) {
   return pi;
 }
 
+COMPONENT_EXPORT
 mpf_class algorithms::factorial(int n) {
     mpf_class result = 1;
     for (int i = 2; i <= n; ++i) {
@@ -39,6 +40,7 @@ mpf_class algorithms::factorial(int n) {
     return result;
 }
 
+COMPONENT_EXPORT
 void algorithms::compute_pi_chudnovsky(mpf_class &pi) {
     mpf_set_default_prec(GMP_PRECISION);
 

@@ -1,4 +1,5 @@
 import("//build/config/win/manifest.gni")
+import("//build/config/static_shared.gni")
 
 # MDI GUI App
 executable("picalc_win") {
@@ -38,8 +39,8 @@ source_set("picalc_sources") {
   configs += [ ":nt5", ]
 
   configs += [
-    "//src/picalc_win/libpicalc:precompiled",    
-    "//src/picalc_win/libpicalc:libgmp",    
+    "//src/picalc_win/libpicalc:precompiled",
+    "//src/picalc_win/libpicalc:libgmp"
   ]
 
   sources = [
@@ -57,5 +58,11 @@ source_set("picalc_sources") {
     "resource.h"
   ]
 
-  deps = [ "//src/picalc_win/libpicalc:libpicalc" ]
+  deps = []
+
+  if (is_component_build) {
+    deps += [ "//src/picalc_win/libpicalc:libpicalc" ]
+  } else {
+    deps += [ "//src/picalc_win/libpicalc:libpicalc_static" ]
+  }
 }

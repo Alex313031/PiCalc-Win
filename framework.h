@@ -15,7 +15,9 @@
 
 // To allow std::min and std::max
 // instead of MIN/MAX macros
-#define NOMINMAX
+#ifndef NOMINMAX
+ #define NOMINMAX
+#endif // NOMINMAX
 
 // Must include this before windows.h for deprecated converters
 #include <codecvt>

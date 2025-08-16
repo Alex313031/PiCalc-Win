@@ -44,23 +44,57 @@ config("libgmp") {
 # All of our Pi functions in one nice .dll
 shared_library("libpicalc") {
   configs -= [ "//build/config/win:nominmax", ]
-
-  # Must explicitly set this for sources
-  configs += [ "//build/config/win:windowed", ]
-
-  configs += [ "//src/picalc_win:nt5", ]
-
-  configs += [
-    ":precompiled",
-    ":libgmp",
-  ]
+  configs += [ ":libpicalc_config" ]
 
   sources = [
     "component_export.h",
     "constants.h",
     "libpicalc.cc",
     "libpicalc.h",
+    "libpicalc.rc"
   ]
+  #deps = [ ":libpicalc_sources" ]
 
   public_deps = [ "//src/picalc_win/libpicalc/gmp:gmpxx" ]
+}
+
+# For no dependencies
+static_library("libpicalc_static") {
+  configs -= [ "//build/config/win:nominmax", ]
+  configs += [ ":libpicalc_config" ]
+
+  sources = [
+    "component_export.h",
+    "constants.h",
+    "libpicalc.cc",
+    "libpicalc.h",
+    "libpicalc.rc"
+  ]
+  #deps = [ ":libpicalc_sources" ]
+
+  public_deps = [ "//src/picalc_win/libpicalc/gmp:gmpxx" ]
+}
+
+source_set("libpicalc_sources") {
+  configs += [ ":libpicalc_config" ]
+
+  sources = [
+    "component_export.h",
+    "constants.h",
+    "libpicalc.cc",
+    "libpicalc.h",
+    "libpicalc.rc"
+  ]
+}
+
+config("libpicalc_config") {
+  configs = []
+  configs += [ "//src/picalc_win:nt5", ]
+  # Must explicitly set this for sources
+  configs += [ "//build/config/win:windowed", ]
+
+  configs += [
+    ":precompiled",
+    ":libgmp"
+  ]
 }
