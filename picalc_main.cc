@@ -71,68 +71,6 @@ void DoFileSave(HWND hwnd) {
   }
 }
 
-LRESULT CALLBACK MDIChildWndProc(HWND hWnd,
-                                 UINT msg,
-                                 WPARAM wParam,
-                                 LPARAM lParam) {
-  switch (msg) {
-    case WM_CREATE: {
-      HFONT hfDefault;
-      HWND hEdit = NULL;
-      HWND hDis = NULL;
-
-      // Create Edit Control
-      hEdit = CreateWindowExW(WS_EX_CLIENTEDGE, L"EDIT", L"",
-                             WS_CHILD | WS_VISIBLE | WS_VSCROLL | WS_HSCROLL |
-                                 ES_MULTILINE | ES_AUTOVSCROLL | ES_AUTOHSCROLL,
-                             0, 0, 100, 100, hWnd, (HMENU)IDC_CHILD_EDIT,
-                             GetModuleHandle(NULL), NULL);
-      if (!hEdit || hEdit == NULL) {
-        MessageBoxW(hWnd, L"Could not create edit box.", L"Error",
-                   MB_OK | MB_ICONERROR);
-      }
-      // Create regular control
-      hDis = CreateWindowExW(WS_EX_MDICHILD, L"MDICLIENT", L"hawk",
-                             WS_CHILD | WS_VSCROLL,
-                             0, 0, 100, 100, hWnd, NULL,
-                             GetModuleHandle(NULL), NULL);
-      if (!hDis || hDis == NULL) {
-        MessageBoxW(hWnd, L"Could not create Pi box.", L"Error",
-                   MB_OK | MB_ICONERROR);
-      }
-
-      hfDefault = (HFONT)GetStockObject(DEFAULT_GUI_FONT);
-      SendMessage(hEdit, WM_SETFONT, (WPARAM)hfDefault, MAKELPARAM(FALSE, 0));
-     //SendMessage(hDis, WM_SETFONT, (WPARAM)hfDefault, MAKELPARAM(FALSE, 0));
-    } break;
-    case WM_MDIACTIVATE: {
-    } break;
-    case WM_COMMAND:
-      break;
-    case WM_SIZE: {
-      HWND hEdit;
-      RECT rcClient;
-
-      // Calculate remaining height and size edit
-      GetClientRect(hWnd, &rcClient);
-
-      hEdit = GetDlgItem(hWnd, IDC_CHILD_EDIT);
-      SetWindowPos(hEdit, HWND_TOP, 0, 0, rcClient.right, rcClient.bottom,
-                   SWP_NOZORDER);
-    } break;
-    case WM_PAINT: {
-      // Actually paint the contents of our window finally
-      //PaintMDI(hWnd, g_hMDIClient);
-    } break;
-    case WM_MDIDESTROY:
-      DestroyWindow(hWnd);
-      break;
-    default:
-      return DefMDIChildProc(hWnd, msg, wParam, lParam);
-  }
-  return 0;
-}
-
 LRESULT CALLBACK MDIChildWndProcOld(HWND hwnd,
                                  UINT msg,
                                  WPARAM wParam,

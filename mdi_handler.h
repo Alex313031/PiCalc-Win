@@ -21,6 +21,14 @@ void DoFileOpen(HWND hwnd);
 
 HWND CreateNewMDIChild(HWND hMDIClient);
 
-LRESULT CALLBACK MainWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
+LRESULT CALLBACK MDIChildWndProc(HWND hWnd,
+                                 UINT msg,
+                                 WPARAM wParam,
+                                 LPARAM lParam)
+
+LRESULT CALLBACK MainWndProc(HWND hwnd,
+                             UINT msg,
+                             WPARAM wParam,
+                             LPARAM lParam);
 
 #endif // MDI_HANDLER_H_
