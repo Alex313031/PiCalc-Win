@@ -1,5 +1,7 @@
 #include "picalc_main.h"
 
+#include "libpicalc/libpicalc.h"
+
 #include "common.h"
 #include "globals.h"
 #include "resource.h"
@@ -69,12 +71,39 @@ void DoFileSave(HWND hwnd) {
   }
 }
 
-LRESULT CALLBACK MDIChildWndProc(HWND hwnd,
+LRESULT CALLBACK MDIChildWndProc(HWND hWnd,
                                  UINT msg,
                                  WPARAM wParam,
                                  LPARAM lParam) {
   switch (msg) {
     case WM_CREATE: {
+      HFONT hfDefault;
+      HWND hEdit = NULL;
+      HWND hDis = NULL;
+
+      // Create Edit Control
+      hEdit = CreateWindowExW(WS_EX_CLIENTEDGE, L"EDIT", L"",
+                             WS_CHILD | WS_VISIBLE | WS_VSCROLL | WS_HSCROLL |
+                                 ES_MULTILINE | ES_AUTOVSCROLL | ES_AUTOHSCROLL,
+                             0, 0, 100, 100, hWnd, (HMENU)IDC_CHILD_EDIT,
+                             GetModuleHandle(NULL), NULL);
+      if (!hEdit || hEdit == NULL) {
+        MessageBoxW(hWnd, L"Could not create edit box.", L"Error",
+                   MB_OK | MB_ICONERROR);
+      }
+      // Create regular control
+      hDis = CreateWindowExW(WS_EX_MDICHILD, L"MDICLIENT", L"hawk",
+                             WS_CHILD | WS_VSCROLL,
+                             0, 0, 100, 100, hWnd, NULL,
+                             GetModuleHandle(NULL), NULL);
+      if (!hDis || hDis == NULL) {
+        MessageBoxW(hWnd, L"Could not create Pi box.", L"Error",
+                   MB_OK | MB_ICONERROR);
+      }
+
+      hfDefault = (HFONT)GetStockObject(DEFAULT_GUI_FONT);
+      SendMessage(hEdit, WM_SETFONT, (WPARAM)hfDefault, MAKELPARAM(FALSE, 0));
+     //SendMessage(hDis, WM_SETFONT, (WPARAM)hfDefault, MAKELPARAM(FALSE, 0));
     } break;
     case WM_MDIACTIVATE: {
     } break;
@@ -85,14 +114,21 @@ LRESULT CALLBACK MDIChildWndProc(HWND hwnd,
       RECT rcClient;
 
       // Calculate remaining height and size edit
-      GetClientRect(hwnd, &rcClient);
+      GetClientRect(hWnd, &rcClient);
 
-      hEdit = GetDlgItem(hwnd, IDC_CHILD_EDIT);
-      SetWindowPos(hEdit, NULL, 0, 0, rcClient.right, rcClient.bottom,
+      hEdit = GetDlgItem(hWnd, IDC_CHILD_EDIT);
+      SetWindowPos(hEdit, HWND_TOP, 0, 0, rcClient.right, rcClient.bottom,
                    SWP_NOZORDER);
-    }
+    } break;
+    case WM_PAINT: {
+      // Actually paint the contents of our window finally
+      //PaintMDI(hWnd, g_hMDIClient);
+    } break;
+    case WM_MDIDESTROY:
+      DestroyWindow(hWnd);
+      break;
     default:
-      return DefMDIChildProc(hwnd, msg, wParam, lParam);
+      return DefMDIChildProc(hWnd, msg, wParam, lParam);
   }
   return 0;
 }
@@ -293,9 +329,16 @@ int WINAPI wWinMain(HINSTANCE hInstance,
     constexpr int return_code = STATUS_BAD;
     return handleReturnCode(return_code);
   } else {
-    std::wcout << "Welcome to PiCalc-Win v." << getVersionString() << std::endl;
+    //std::wcout << "Welcome to PiCalc-Win v." << getVersionString() << std::endl;
     HWND printHwnd = getMainHwnd();
-    std::wcout << "getMainHwnd() reported " << printHwnd << std::endl;
+    //std::wcout << "getMainHwnd() reported " << printHwnd << std::endl;
+    mpf_set_default_prec(GMP_PRECISION);
+    mpf_class pi;
+    algorithms::compute_pi_chudnovsky(pi);
+
+    //std::wcout << std::setprecision(MAX_LOADSTRING) << L"algorithms::chudnovsky = " << algorithms::chudnovsky(max_iterations) << ENDL;
+    //std::cout << std::setprecision(DIGITS) << "compute_pi_chudnovsky to PRECISION " << PRECISION << " equals: " << pi << std::endl;
+    std::cout << std::setprecision(DIGITS) << "Pi to 1024 digits is: \n" << pi << std::endl;
   }
 
   // And the child window class

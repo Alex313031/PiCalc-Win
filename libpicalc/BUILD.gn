@@ -10,7 +10,38 @@ precompiled_header("precompiled") {
   precompiled_source = "stdafx.cc"
 }
 
-# Test that .so, .dll, and .dylib files can be built
+config("libgmp") {
+  libs = []
+  if (current_cpu == "x86") {
+    if (is_debug) {
+      libs = [
+        "//src/picalc_win/libpicalc/gmp/x86/debug/gmpd.lib",
+        "//src/picalc_win/libpicalc/gmp/x86/debug/gmpxxd.lib",
+      ]
+    } else {
+      libs = [
+        "//src/picalc_win/libpicalc/gmp/x86/release/gmp.lib",
+        "//src/picalc_win/libpicalc/gmp/x86/release/gmpxx.lib",
+      ]
+    }
+  } else if (current_cpu == "x64") {
+    if (is_debug) {
+      libs = [
+        "//src/picalc_win/libpicalc/gmp/x64/debug/gmpd.lib",
+        "//src/picalc_win/libpicalc/gmp/x64/debug/gmpxxd.lib",
+      ]
+    } else {
+      libs = [
+        "//src/picalc_win/libpicalc/gmp/x64/release/gmp.lib",
+        "//src/picalc_win/libpicalc/gmp/x64/release/gmpxx.lib",
+      ]
+    }
+  } else {
+    assert(current_cpu != "arm64", "GMP only supported on x86 and x64!")
+  }
+}
+
+# All of our Pi functions in one nice .dll
 shared_library("libpicalc") {
   configs -= [ "//build/config/win:nominmax", ]
 
@@ -21,11 +52,15 @@ shared_library("libpicalc") {
 
   configs += [
     ":precompiled",
+    ":libgmp",
   ]
 
   sources = [
+    "component_export.h",
+    "constants.h",
     "libpicalc.cc",
     "libpicalc.h",
-    "component_export.h",
   ]
+
+  public_deps = [ "//src/picalc_win/libpicalc/gmp:gmpxx" ]
 }

@@ -17,3 +17,5 @@ thumbs.db
 *.exe
 *.pdb
 *.stamp
+
+/libpicalc/other/

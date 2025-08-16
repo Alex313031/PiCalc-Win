@@ -1,6 +1,20 @@
-rename files
-move to src
-remove vcruntime dep
-make win xp compatible
-add more algorithms
-better text positioning
+Short Term:
+
+Make toolchain_xp.py work better, check environment_blahblah files
+Rename files nicer
+Move to src
+Add more algorithms
+Better text positioning
+Better About dialog from theforgers
+Use w instead of t and L instead of _T().
+Move windowproc handlers for mdi and main to correct locations
+Correct keyboard shortcuts not working
+Add subsystem and check other flags in gmp
+Check .pdb location for all gmp build types
+Get pointer to dll functions safely and guard
+
+Long Term:
+Integrate gmp build with gn build
+Add menu items
+Add button items with icons for algorithm selection
+Handle unicode completely and avoid codecvt

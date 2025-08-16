@@ -19,18 +19,10 @@
 // English (US) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENC)
-#ifdef _WIN32
-//LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
-LANGUAGE 9, 1 // ENG_US
-//#pragma code_page(65001) // UTF-8
-#pragma code_page(1252)
-#endif //_WIN32
-
-// Macro to convert to string
-#if !defined(_STRINGIZE)
-#define _STRINGIZE(in) #in
-#define STRINGIZE(in) _STRINGIZE(in)
-#endif
+// #pragma code_page(1252) // Traditional Windows ANSI codepage
+// LANGUAGE 9, 1 // ENG_US
+LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
+#pragma code_page(65001) // UTF-8
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -45,7 +37,6 @@ END
 2 TEXTINCLUDE
 BEGIN
     "#ifndef APSTUDIO_INVOKED\r\n"
-    "#include ""targetver.h""\r\n"
     "#endif\r\n"
     "#define APSTUDIO_HIDDEN_SYMBOLS\r\n"
     "#include ""windows.h""\r\n"
@@ -66,17 +57,6 @@ END
 // Version Information
 //
 
-// Main version constant
-#ifndef _VERSION
-// Run stringizer
-#define _VERSION(major,minor,build) STRINGIZE(major) "." STRINGIZE(minor) "." STRINGIZE(build)
-#endif
-
-// Convert to string to use later
-#ifndef VERSION_STRING
-#define VERSION_STRING _VERSION(MAJOR_VERSION, MINOR_VERSION, BUILD_VERSION)
-#endif
-
 VS_VERSION_INFO VERSIONINFO
  FILEVERSION MAJOR_VERSION, MINOR_VERSION, BUILD_VERSION
  PRODUCTVERSION MAJOR_VERSION, MINOR_VERSION, BUILD_VERSION
@@ -93,7 +73,7 @@ VS_VERSION_INFO VERSIONINFO
 BEGIN
     BLOCK "StringFileInfo"
     BEGIN
-        BLOCK "040904B0" // Neutral Language Character Set
+        BLOCK "040904B0" // English Unicode
         BEGIN
             VALUE "Comments", "https://github.com/Alex313031/PiCalc-Win"
             VALUE "CompanyName", "Alex313031"
@@ -102,7 +82,7 @@ BEGIN
             VALUE "InternalName", "picalc_win"
             VALUE "LegalCopyright", LEGAL_COPYRIGHT
             VALUE "LegalTrademarks", "https://github.com/Alex313031/PiCalc-Win/blob/main/LICENSE.md"
-            VALUE "OriginalFilename", "picalc.exe"
+            VALUE "OriginalFilename", "picalc_win.exe"
             VALUE "ProductName", "PiCalc-Win"
             VALUE "ProductVersion", VERSION_STRING
         END
@@ -166,6 +146,20 @@ END
 
 /////////////////////////////////////////////////////////////////////////////
 //
+// Keyboard Accelerators
+//
+
+IDR_MAINMENU ACCELERATORS
+BEGIN
+    "?",    IDM_ABOUT,    ASCII,    ALT
+    "/",    IDM_ABOUT,    ASCII,    ALT
+    "q",    IDM_EXIT,     CONTROL,  VIRTKEY
+    "w",    IDM_EXIT,     CONTROL,  VIRTKEY
+    "h",    IDM_HELP,     CONTROL,  VIRTKEY
+END
+
+/////////////////////////////////////////////////////////////////////////////
+//
 // String Table
 //
 
@@ -190,18 +184,6 @@ BEGIN
     LTEXT           ABOUT_VERSION, IDC_STATIC, 34, 7, 98, 8
     LTEXT           ABOUT_COPYRIGHT, IDC_STATIC, 34, 17, 86, 8
     DEFPUSHBUTTON   "OK", IDOK, 90, 46, 50, 14, WS_GROUP
-END
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// Keyboard Accelerators
-//
-
-IDR_MAINMENU ACCELERATORS
-BEGIN
-    "/",  IDM_ABOUT, ASCII, ALT
-    //"?",  IDM_HELP,  VIRTKEY, ALT, NOINVERT
-    //"/",  IDM_HELP,  VIRTKEY, CONTROL, NOINVERT
 END
 
 /////////////////////////////////////////////////////////////////////////////

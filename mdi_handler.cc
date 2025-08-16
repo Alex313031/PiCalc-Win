@@ -69,9 +69,6 @@ HWND CreateNewMDIChild(HWND hMDIClient) {
   MDICREATESTRUCT mcs;
   HWND hChild = NULL;
 
-  const float128 pi = algorithms::chudnovsky(max_iterations);
-  std::wcout << pi << ENDL;
-
   mcs.szTitle = szEmptyFileName;
   mcs.szClass = g_szChildClassName;
   mcs.hOwner = GetModuleHandle(NULL);
@@ -88,6 +85,7 @@ HWND CreateNewMDIChild(HWND hMDIClient) {
 }
 
 LRESULT CALLBACK MainWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
+  LPMINMAXINFO lpMMI = (LPMINMAXINFO)lParam;
   switch (msg) {
     case WM_CREATE: {
       HWND hTool = NULL;
@@ -200,13 +198,17 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) 
       SetWindowPos(hMDI, NULL, 0, iToolHeight, rcClient.right, iMDIHeight,
                    SWP_NOZORDER);
     } break;
-    case WM_CLOSE:
+    case WM_CLOSE: {
       DestroyWindow(hwnd);
-      break;
-    case WM_DESTROY:
+    } break;
+    case WM_DESTROY: {
       PostQuitMessage(STATUS_GOOD);
-      break;
-    case WM_COMMAND:
+    } break;
+    case WM_GETMINMAXINFO: {
+      lpMMI->ptMinTrackSize.x = 300;
+      lpMMI->ptMinTrackSize.y = 200;
+    } break;
+    case WM_COMMAND: {
       switch (LOWORD(wParam)) {
         case IDM_EXIT:
           PostMessage(hwnd, WM_CLOSE, 0, 0);
@@ -249,7 +251,7 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) 
           }
         }
       }
-      break;
+    } break;
     default:
       return DefFrameProc(hwnd, g_hMDIClient, msg, wParam, lParam);
   }

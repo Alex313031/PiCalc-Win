@@ -1,3 +1,5 @@
+import("//build/config/win/manifest.gni")
+
 # MDI GUI App
 executable("picalc_win") {
   configs -= [ "//build/config/win:console", ]
@@ -5,7 +7,10 @@ executable("picalc_win") {
 
   configs += [ "//build/config/win:windowed", ]
 
-  deps = [ ":picalc_sources" ]
+  deps = [
+    ":picalc_sources",
+    ":picalc_win_manifest",
+  ]
 }
 
 config("nt5") {
@@ -16,6 +21,14 @@ config("nt5") {
   ]
 }
 
+windows_manifest("picalc_win_manifest") {
+  sources = [ as_invoker_manifest, ]
+
+  if (use_common_controls) {
+    sources += [ common_controls_manifest, ]
+  }
+}
+
 source_set("picalc_sources") {
   configs -= [ "//build/config/win:nominmax", ]
 
@@ -23,6 +36,11 @@ source_set("picalc_sources") {
   configs += [ "//build/config/win:windowed", ]
 
   configs += [ ":nt5", ]
+
+  configs += [
+    "//src/picalc_win/libpicalc:precompiled",    
+    "//src/picalc_win/libpicalc:libgmp",    
+  ]
 
   sources = [
     "common.h",
