@@ -402,7 +402,7 @@ typedef const __gmp_randstate_struct *gmp_randstate_srcptr;
 
 /* Microsoft's C compiler accepts __inline */
 #ifdef _MSC_VER
-#define __GMP_EXTERN_INLINE  __inline
+#define __GMP_EXTERN_INLINE  static __inline
 #endif
 
 /* Recent enough Sun C compilers want "inline" */

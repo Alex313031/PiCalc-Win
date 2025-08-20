@@ -15,8 +15,8 @@ config("libgmp") {
   if (current_cpu == "x86") {
     if (is_debug) {
       libs = [
-        "//src/picalc_win/libpicalc/gmp/x86/debug/gmpd.lib",
-        "//src/picalc_win/libpicalc/gmp/x86/debug/gmpxxd.lib",
+        "//src/picalc_win/libpicalc/gmp/x86/debug/gmp.lib",
+        "//src/picalc_win/libpicalc/gmp/x86/debug/gmpxx.lib",
       ]
     } else {
       libs = [
@@ -27,8 +27,8 @@ config("libgmp") {
   } else if (current_cpu == "x64") {
     if (is_debug) {
       libs = [
-        "//src/picalc_win/libpicalc/gmp/x64/debug/gmpd.lib",
-        "//src/picalc_win/libpicalc/gmp/x64/debug/gmpxxd.lib",
+        "//src/picalc_win/libpicalc/gmp/x64/debug/gmp.lib",
+        "//src/picalc_win/libpicalc/gmp/x64/debug/gmpxx.lib",
       ]
     } else {
       libs = [
@@ -47,6 +47,7 @@ shared_library("libpicalc") {
   configs += [ ":libpicalc_config" ]
 
   sources = [
+    "compiler_specific.h",
     "component_export.h",
     "constants.h",
     "libpicalc.cc",
@@ -64,6 +65,7 @@ static_library("libpicalc_static") {
   configs += [ ":libpicalc_config" ]
 
   sources = [
+    "compiler_specific.h",
     "component_export.h",
     "constants.h",
     "libpicalc.cc",
@@ -79,6 +81,7 @@ source_set("libpicalc_sources") {
   configs += [ ":libpicalc_config" ]
 
   sources = [
+    "compiler_specific.h",
     "component_export.h",
     "constants.h",
     "libpicalc.cc",
