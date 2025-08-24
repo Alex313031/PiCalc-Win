@@ -1,0 +1,22 @@
+    /*typedef UINT (CALLBACK* dllcallback)();
+    dllcallback piaddr;
+    UINT returnval;
+
+    const char* chud_func = "pi_chudnovsky";
+    piaddr = reinterpret_cast<dllcallback>(GetProcAddress(hLibPi, "pi_chudnovsky"));
+    if (!piaddr) {
+      std::wcout << L"piaddr = false" << std::endl;
+      std::wcerr << L"Failed to get function address of " << chud_func
+                 << L" Error: " << GetLastError() << std::endl;
+      if (!FreeLibrary(hLibPi)) {
+        std::wcerr << L"Failed to free library " << kPiCalcDll
+                   << L" Error: " << GetLastError() << std::endl;
+      } else {
+        std::wcerr << L"Successfully freed library " << kPiCalcDll << std::endl;
+      }
+    } else {
+      std::wcout << L"piaddr = true" << std::endl;
+      returnval = piaddr();
+      //pi = *piaddr;
+     // bool pi_func = piadr(pi);
+    }*/
