@@ -1,5 +1,5 @@
 # GNU Multi-Precision C/C++ Library
-source_set("gmpxx") {
+source_set("gmp_headers") {
   configs -= [ "//build/config/win:nominmax", ]
 
   # Must explicitly set this for sources

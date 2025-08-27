@@ -6,7 +6,8 @@
 
 // Main resource IDs, typical values inferred from usage
 #define IDR_MAINFRAME           103
-#define IDR_MAINMENU            104
+#define IDI_MAINFRAME           104
+#define IDC_MAINMENU            105
 
 // Control IDs
 #define IDC_CHILD_EDIT          1001

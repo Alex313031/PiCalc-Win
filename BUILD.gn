@@ -40,7 +40,6 @@ source_set("picalc_sources") {
 
   configs += [
     "//src/picalc_win/libpicalc:precompiled",
-    "//src/picalc_win/libpicalc:libgmp"
   ]
 
   sources = [
@@ -61,8 +60,17 @@ source_set("picalc_sources") {
   deps = []
 
   if (is_component_build) {
-    deps += [ "//src/picalc_win/libpicalc:libpicalc" ]
+    deps += [
+      "//src/picalc_win/libpicalc:libpicalc"
+    ]
   } else {
-    deps += [ "//src/picalc_win/libpicalc:libpicalc_static" ]
+    deps += [
+      "//src/picalc_win/libpicalc:libpicalc_static"
+    ]
   }
+
+  public_deps = [
+    "//src/picalc_win/libpicalc/gmp/gmp:gmp",
+    "//src/picalc_win/libpicalc/gmp/gmp:gmpxx"
+  ]
 }

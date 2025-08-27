@@ -128,13 +128,19 @@
 #endif // PRETTY_FUNCTION
 
 // Bool to be used externally to test if DCHECK is on
-constexpr bool is_dcheck = DCHECK && DCHECK == 1;
+#if defined(IS_DCHECK)
+ #ifndef DCHECK
+  #define DCHECK 1
+ #endif
+#endif
+
+constexpr bool is_dcheck = DCHECK == 1;
 
 // Same as above but for DEBUG/NDEBUG
 #if defined DEBUG || defined _DEBUG
- _INLINE constexpr bool is_debug = true;
+ constexpr bool is_debug = true;
 #else
- _INLINE constexpr bool is_debug = false;
+ constexpr bool is_debug = false;
 #endif // defined DEBUG || defined DEBUG
 
 #endif // LIBPICALC_COMPILER_SPECIFIC_H_

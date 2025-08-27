@@ -10,16 +10,18 @@ INT_PTR CALLBACK AboutDialogProc(HWND hWndDlg, UINT uMsg, WPARAM wParam, LPARAM 
   switch (uMsg) {
     case WM_INITDIALOG: {
       return (INT_PTR)TRUE;
-    }
+    } break;
     case WM_COMMAND: {
       WORD cmd_id = LOWORD(wParam);
+      BOOL clicked = FALSE;
 
       if (cmd_id == IDOK || cmd_id == IDCANCEL) {
+        std::wcout << __func__ << std::endl;
         EndDialog(hWndDlg, (INT_PTR)cmd_id);
-        return (INT_PTR)TRUE;
+        clicked = TRUE;
       }
-      break;
-    }
+      return (INT_PTR)clicked;
+    } break;
   }
 
   return (INT_PTR)FALSE;

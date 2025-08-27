@@ -4,7 +4,6 @@
 #define LIBPICALC_LIBPICALC_H
 
 #include "component_export.h"
-
 #include "constants.h"
 #include "../framework.h"
 #include "../resource.h"
@@ -26,7 +25,11 @@ const mp_bitcnt_t GMP_PRECISION = static_cast<mp_bitcnt_t>(PRECISION);
 //typedef float128 (*oldfactorial)(float128 num);
 //typedef float128 (*oldchudnovsky)(int iterations);
 
-typedef mpf_class (*compute_pi_chudnovsky)(mpf_class &pi);
+#ifdef COMPONENT_BUILD
+ // For type safety when getting address of .dll functions
+ //typedef bool (*compute_pi_chudnovsky)(mpf_class &pi);
+ //typedef mpf_class (pi_chudnovsky)();
+#endif // #ifdef COMPONENT_BUILD
 
 // Empty namespace for old functions
 namespace {
@@ -44,12 +47,12 @@ namespace {
   float128 oldchudnovsky(int iterations);
 };
 
-// Main functions exported by libpicalc.dll for usage everywhere
-namespace algorithms {
-  // Multi-Precision factorial
-  COMPONENT_EXPORT mpf_class factorial(int n);
-  // Chudnovsky algorithm for Pi calculation
-  COMPONENT_EXPORT void compute_pi_chudnovsky(mpf_class &pi);
-};
+// Multi-Precision factorial
+mpf_class factorial(int n);
+
+// Chudnovsky algorithm for Pi calculation
+bool compute_pi_chudnovsky(mpf_class &pi);
+
+mpf_class mpf_pi_chudnovsky();
 
 #endif // LIBPICALC_LIBPICALC_H

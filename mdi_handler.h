@@ -9,10 +9,10 @@
 #include "framework.h"
 
 // Child window class
-const TCHAR g_szChildClassName[] = _T("PiCalcMDIWndClass");
+const WCHAR g_szChildClassName[] = L"PiCalcMDIWndClass";
 
 // Default child window title
-const LPCTSTR szEmptyFileName = _T("[Untitled]");
+const LPCWSTR szEmptyFileName = L"[Untitled]";
 
 /* Function Definitions */
 BOOL LoadTextFileToEdit(HWND hEdit, LPCTSTR pszFileName);
@@ -24,11 +24,6 @@ HWND CreateNewMDIChild(HWND hMDIClient);
 LRESULT CALLBACK MDIChildWndProc(HWND hWnd,
                                  UINT msg,
                                  WPARAM wParam,
-                                 LPARAM lParam)
-
-LRESULT CALLBACK MainWndProc(HWND hwnd,
-                             UINT msg,
-                             WPARAM wParam,
-                             LPARAM lParam);
+                                 LPARAM lParam);
 
 #endif // MDI_HANDLER_H_

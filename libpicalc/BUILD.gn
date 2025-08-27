@@ -10,8 +10,9 @@ precompiled_header("precompiled") {
   precompiled_source = "stdafx.cc"
 }
 
-config("libgmp") {
+config("libgmp_prebuilt") {
   libs = []
+  ldflags = [ "/ignore:4099" ]
   if (current_cpu == "x86") {
     if (is_debug) {
       libs = [
@@ -43,6 +44,7 @@ config("libgmp") {
 
 # All of our Pi functions in one nice .dll
 shared_library("libpicalc") {
+  defines = [ "INSIDE_DLL" ]
   configs -= [ "//build/config/win:nominmax", ]
   configs += [ ":libpicalc_config" ]
 
@@ -52,11 +54,17 @@ shared_library("libpicalc") {
     "constants.h",
     "libpicalc.cc",
     "libpicalc.h",
-    "libpicalc.rc"
+    "libpicalc_dll.h",
+    "libpicalc.rc",
+    "stdafx.h"
   ]
   #deps = [ ":libpicalc_sources" ]
 
-  public_deps = [ "//src/picalc_win/libpicalc/gmp:gmpxx" ]
+  public_deps = [ "//src/picalc_win/libpicalc/gmp:gmp_headers" ]
+  public_deps += [
+    "//src/picalc_win/libpicalc/gmp/gmp:gmp",
+    "//src/picalc_win/libpicalc/gmp/gmp:gmpxx"
+  ]
 }
 
 # For no dependencies
@@ -70,11 +78,17 @@ static_library("libpicalc_static") {
     "constants.h",
     "libpicalc.cc",
     "libpicalc.h",
-    "libpicalc.rc"
+    "libpicalc_dll.h",
+    "libpicalc.rc",
+    "stdafx.h"
   ]
   #deps = [ ":libpicalc_sources" ]
 
-  public_deps = [ "//src/picalc_win/libpicalc/gmp:gmpxx" ]
+  public_deps = [ "//src/picalc_win/libpicalc/gmp:gmp_headers" ]
+  public_deps += [
+    "//src/picalc_win/libpicalc/gmp/gmp:gmp",
+    "//src/picalc_win/libpicalc/gmp/gmp:gmpxx"
+  ]
 }
 
 source_set("libpicalc_sources") {
@@ -86,6 +100,7 @@ source_set("libpicalc_sources") {
     "constants.h",
     "libpicalc.cc",
     "libpicalc.h",
+    "libpicalc_dll.h",
     "libpicalc.rc"
   ]
 }
@@ -97,7 +112,8 @@ config("libpicalc_config") {
   configs += [ "//build/config/win:windowed", ]
 
   configs += [
-    ":precompiled",
-    ":libgmp"
+    #":precompiled",
+    #":libgmp_prebuilt"
+    #":libgmp"
   ]
 }

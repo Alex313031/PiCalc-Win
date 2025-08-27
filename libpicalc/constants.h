@@ -10,14 +10,6 @@
  typedef __float128 float128;
 #endif // __float128
 
-// Exit codes
-#ifndef SUCCESS_CODE
- #define SUCCESS_CODE 0
-#endif
-#ifndef ERROR_CODE
- #define ERROR_CODE 1
-#endif
-
 // Easier line endings
 #ifndef ENDL
  #define ENDL std::endl
@@ -34,10 +26,22 @@
  #define MAX_LOADSTRING MAX_PATH // Traditionally 255
 #endif // MAX_LOADSTRING
 
-#if !defined(SUCCESS) && !defined(FAILED)
- static constexpr int SUCCESS = SUCCESS_CODE;
- static constexpr int FAILED = ERROR_CODE;
-#endif // !defined(SUCCESS) || !defined(FAILED)
+// Exit code defines
+#ifndef SUCCESS_CODE
+ #define SUCCESS_CODE 0
+#endif
+#ifndef ERROR_CODE
+ #define ERROR_CODE 1
+#endif
+
+// Return codes
+#if !defined(SUCC)
+ static constexpr int SUCC = SUCCESS_CODE;
+#endif // !defined(SUCC)
+
+#if !defined(FAIL)
+ static constexpr int FAIL = ERROR_CODE;
+#endif // !defined(FAIL)
 
 constexpr float128 fzero = 0.0;
 

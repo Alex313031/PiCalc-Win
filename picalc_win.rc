@@ -21,8 +21,8 @@
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENC)
 // #pragma code_page(1252) // Traditional Windows ANSI codepage
 // LANGUAGE 9, 1 // ENG_US
-LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
-#pragma code_page(65001) // UTF-8
+//LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
+//#pragma code_page(65001) // UTF-8
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -62,14 +62,14 @@ VS_VERSION_INFO VERSIONINFO
  PRODUCTVERSION MAJOR_VERSION, MINOR_VERSION, BUILD_VERSION
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
- FILEFLAGS VS_FF_DEBUG // 0x1L
+ FILEFLAGS VS_FF_DEBUG // 0x00000010L
 #else
- FILEFLAGS 0x0L // Normal?
+ FILEFLAGS 0x00000000L // Normal?
 #endif
  // Windows NT
- FILEOS VOS_NT_WINDOWS32 // 0x40004L
- FILETYPE VFT_APP // 0x1L
- FILESUBTYPE VFT2_UNKNOWN // 0x0L
+ FILEOS VOS_NT_WINDOWS32 // 0x00040004L
+ FILETYPE VFT_APP // 0x00000001L
+ FILESUBTYPE VFT2_UNKNOWN // 0x00000000L
 BEGIN
     BLOCK "StringFileInfo"
     BEGIN
@@ -101,7 +101,7 @@ END
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
 
-IDR_MAINFRAME    ICON         "icon.ico"
+IDI_MAINFRAME    ICON         "icon.ico"
 IDI_PICALC       ICON         "icon.ico"
 IDI_SMALL        ICON         "small.ico"
 
@@ -110,7 +110,7 @@ IDI_SMALL        ICON         "small.ico"
 // Menu
 //
 
-IDR_MAINMENU MENU DISCARDABLE 
+IDC_MAINMENU MENU DISCARDABLE
 BEGIN
     POPUP "&File"
     BEGIN
@@ -149,13 +149,13 @@ END
 // Keyboard Accelerators
 //
 
-IDR_MAINMENU ACCELERATORS
+IDC_MAINMENU ACCELERATORS
 BEGIN
-    "?",    IDM_ABOUT,    ASCII,    ALT
-    "/",    IDM_ABOUT,    ASCII,    ALT
-    "q",    IDM_EXIT,     CONTROL,  VIRTKEY
-    "w",    IDM_EXIT,     CONTROL,  VIRTKEY
-    "h",    IDM_HELP,     CONTROL,  VIRTKEY
+    "?",      IDM_ABOUT,  ASCII,    ALT // "?"
+    VK_OEM_2, IDM_ABOUT,  VIRTKEY,  ALT // "/"
+    0x51,     IDM_EXIT,   VIRTKEY,  CONTROL // "q"
+    0x57,     IDM_EXIT,   VIRTKEY,  CONTROL // "w"
+    0x48,     IDM_HELP,   VIRTKEY,  CONTROL // "h"
 END
 
 /////////////////////////////////////////////////////////////////////////////

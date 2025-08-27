@@ -1,8 +1,11 @@
 #include "picalc_main.h"
 
-#include "libpicalc/libpicalc.h"
+#include "libpicalc/gmp/gmp.h"
+#include "libpicalc/gmp/gmpxx.h"
+#include "libpicalc/libpicalc_dll.h"
 
 #include "common.h"
+#include "dialogs.h"
 #include "globals.h"
 #include "resource.h"
 
@@ -200,7 +203,7 @@ ATOM RegisterMainClass(HINSTANCE hInstance) {
   wcex.hIcon          = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_PICALC));
   wcex.hCursor        = LoadCursor(nullptr, IDC_ARROW);
   wcex.hbrBackground  = (HBRUSH)(COLOR_WINDOW+1);
-  wcex.lpszMenuName   = MAKEINTRESOURCE(IDR_MAINMENU);
+  wcex.lpszMenuName   = MAKEINTRESOURCE(IDC_MAINMENU);
   wcex.lpszClassName  = g_szClassName;
   wcex.hIconSm        = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_SMALL));
 
@@ -213,9 +216,189 @@ ATOM RegisterMainClass(HINSTANCE hInstance) {
   }
 }
 
+LRESULT CALLBACK MainWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
+  LPMINMAXINFO lpMMI = (LPMINMAXINFO)lParam;
+  switch (msg) {
+    case WM_CREATE: {
+      HWND hTool = NULL;
+      HWND hChildWin = NULL;
+      TBBUTTON tbb[3];
+      TBADDBITMAP tbab;
+
+      HWND hStatus;
+      int statwidths[] = {100, -1};
+
+      CLIENTCREATESTRUCT ccs;
+
+      // Find window menu where children will be listed
+      ccs.hWindowMenu = GetSubMenu(GetMenu(hwnd), 2);
+      ccs.idFirstChild = ID_MDI_FIRSTCHILD;
+
+      // Create MDI Client
+      hChildWin = CreateWindowEx(
+          WS_EX_CLIENTEDGE, _T("mdiclient"), NULL,
+          WS_CHILD | WS_CLIPCHILDREN | WS_VSCROLL | WS_HSCROLL | WS_VISIBLE,
+          CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, hwnd,
+          (HMENU)IDC_MAIN_MDI, GetModuleHandle(NULL), (LPVOID)&ccs);
+
+      if (!hChildWin || hChildWin == NULL) {
+        MessageBox(hwnd, _T("Could not create MDI client."), _T("Error"),
+                   MB_OK | MB_ICONERROR);
+      } else {
+        g_hMDIClient = hChildWin;
+      }
+
+      // Create Toolbar
+      hTool = CreateWindowEx(0, TOOLBARCLASSNAME, NULL, WS_CHILD | WS_VISIBLE,
+                             0, 0, 0, 0, hwnd, (HMENU)IDC_MAIN_TOOL,
+                             GetModuleHandle(NULL), NULL);
+      if (!hTool || hTool == NULL) {
+        MessageBox(hwnd, _T("Could not create tool bar."), _T("Error"),
+                   MB_OK | MB_ICONERROR);
+      }
+
+      // Send the TB_BUTTONSTRUCTSIZE message, which is required for
+      // backward compatibility.
+      SendMessage(hTool, TB_BUTTONSTRUCTSIZE, (WPARAM)sizeof(TBBUTTON), 0);
+
+      tbab.hInst = HINST_COMMCTRL;
+      tbab.nID = IDB_STD_SMALL_COLOR;
+      SendMessage(hTool, TB_ADDBITMAP, 0, (LPARAM)&tbab);
+
+      ZeroMemory(tbb, sizeof(tbb));
+      tbb[0].iBitmap = STD_FILENEW;
+      tbb[0].fsState = TBSTATE_ENABLED;
+      tbb[0].fsStyle = TBSTYLE_BUTTON;
+      tbb[0].idCommand = ID_FILE_NEW;
+
+      tbb[1].iBitmap = STD_FILEOPEN;
+      tbb[1].fsState = TBSTATE_ENABLED;
+      tbb[1].fsStyle = TBSTYLE_BUTTON;
+      tbb[1].idCommand = ID_FILE_OPEN;
+
+      tbb[2].iBitmap = STD_FILESAVE;
+      tbb[2].fsState = TBSTATE_ENABLED;
+      tbb[2].fsStyle = TBSTYLE_BUTTON;
+      tbb[2].idCommand = ID_FILE_SAVEAS;
+
+      SendMessage(hTool, TB_ADDBUTTONS, sizeof(tbb) / sizeof(TBBUTTON),
+                  (LPARAM)&tbb);
+
+      // Create Status bar
+      hStatus = CreateWindowEx(
+          0, STATUSCLASSNAME, NULL, WS_CHILD | WS_VISIBLE | SBARS_SIZEGRIP, 0,
+          0, 0, 0, hwnd, (HMENU)IDC_MAIN_STATUS, GetModuleHandle(NULL), NULL);
+
+      SendMessage(hStatus, SB_SETPARTS, sizeof(statwidths) / sizeof(int),
+                  (LPARAM)statwidths);
+      SendMessage(hStatus, SB_SETTEXT, 0, (LPARAM)_T("Status"));
+    } break;
+    case WM_SIZE: {
+      HWND hTool;
+      RECT rcTool;
+      LONG iToolHeight;
+
+      HWND hStatus;
+      RECT rcStatus;
+      LONG iStatusHeight;
+
+      HWND hMDI;
+      RECT rcClient;
+      LONG iMDIHeight;
+
+      // Size toolbar and get height
+      hTool = GetDlgItem(hwnd, IDC_MAIN_TOOL);
+      SendMessage(hTool, TB_AUTOSIZE, 0, 0);
+
+      GetWindowRect(hTool, &rcTool);
+      iToolHeight = rcTool.bottom - rcTool.top;
+
+      // Size status bar and get height
+      hStatus = GetDlgItem(hwnd, IDC_MAIN_STATUS);
+      SendMessage(hStatus, WM_SIZE, 0, 0);
+
+      GetWindowRect(hStatus, &rcStatus);
+      iStatusHeight = rcStatus.bottom - rcStatus.top;
+
+      // Calculate remaining height and size edit
+      GetClientRect(hwnd, &rcClient);
+
+      iMDIHeight = rcClient.bottom - iToolHeight - iStatusHeight;
+
+      // Find and set window metrics and position
+      hMDI = GetDlgItem(hwnd, IDC_MAIN_MDI);
+      SetWindowPos(hMDI, NULL, 0, iToolHeight, rcClient.right, iMDIHeight,
+                   SWP_NOZORDER);
+    } break;
+    // When close signal is recieved i.e. from close button
+    case WM_CLOSE: {
+      DestroyWindow(hwnd);
+    } break;
+    // Destroy handler
+    case WM_DESTROY: {
+      PostQuitMessage(SUCC);
+    } break;
+    // For if OS is shutting down, Windows broadcasts to all hwnd on the desktop
+    // to let them know the workstation is going bye bye.
+    case WM_GETMINMAXINFO: {
+      lpMMI->ptMinTrackSize.x = 300;
+      lpMMI->ptMinTrackSize.y = 200;
+    } break;
+    case WM_COMMAND: {
+      std::wcout <<  "WM_COMMAND" << std::endl;
+      switch (LOWORD(wParam)) {
+        case IDM_EXIT:
+          PostMessage(hwnd, WM_CLOSE, 0, 0);
+          break;
+        case ID_FILE_NEW:
+          CreateNewMDIChild(g_hMDIClient);
+          break;
+        case ID_FILE_OPEN: {
+          HWND hChild = CreateNewMDIChild(g_hMDIClient);
+          if (hChild) {
+            DoFileOpen(hChild);
+          }
+        } break;
+        case ID_FILE_CLOSE: {
+          HWND hChild = (HWND)SendMessage(g_hMDIClient, WM_MDIGETACTIVE, 0, 0);
+          if (hChild) {
+            SendMessage(hChild, WM_CLOSE, 0, 0);
+          }
+        } break;
+        case ID_WINDOW_TILE:
+          SendMessage(g_hMDIClient, WM_MDITILE, 0, 0);
+          break;
+        case ID_WINDOW_CASCADE:
+          SendMessage(g_hMDIClient, WM_MDICASCADE, 0, 0);
+          break;
+        case IDM_HELP:
+          break;
+        case IDM_ABOUT:
+          ShowAboutDialog(hwnd);
+          break;
+        default: {
+          if (LOWORD(wParam) >= ID_MDI_FIRSTCHILD) {
+            DefFrameProc(hwnd, g_hMDIClient, WM_COMMAND, wParam, lParam);
+          } else {
+            HWND hChild =
+                (HWND)SendMessage(g_hMDIClient, WM_MDIGETACTIVE, 0, 0);
+            if (hChild) {
+              SendMessage(hChild, WM_COMMAND, wParam, lParam);
+            }
+          }
+        }
+      }
+    } break;
+    default:
+      return DefFrameProc(hwnd, g_hMDIClient, msg, wParam, lParam);
+  }
+  return 0;
+}
+
 BOOL InitInstance(HINSTANCE hInstance, int nCmdShow) {
   HWND hwnd = NULL;
 
+  // Create main window
   hwnd = CreateWindowEx(0, g_szClassName, lpszWindowTitle,
                         WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN, CW_USEDEFAULT,
                         CW_USEDEFAULT, 480, 320, NULL, NULL, hInstance, NULL);
@@ -231,6 +414,21 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow) {
    return true;
 }
 
+void printPiForTesting() {
+  std::ostringstream osspi;
+  if (oss_pi_chudnovsky(osspi)) {
+    std::cout << "oss_pi_chudnovsky(osspi) = " << std::fixed << std::setprecision(1000) << osspi.str() << std::endl;
+    std::wostringstream wosspi;
+    woss_pi_chudnovsky(wosspi);
+    std::wcout << L"woss_pi_chudnovsky(wosspi) = " << wosspi.str() << std::endl;
+    wchar_t wpi;
+    wpi_chudnovsky(wpi);
+    std::wcout << L"wpi_chudnovsky() = " << wpi << std::endl;
+  } else {
+    std::wcout << __func__ << L" Failed" << std::endl;
+  }
+}
+
 int WINAPI wWinMain(HINSTANCE hInstance,
                      HINSTANCE hPrevInstance,
                      LPTSTR lpCmdLine,
@@ -240,12 +438,15 @@ int WINAPI wWinMain(HINSTANCE hInstance,
   g_hInstance = hInstance;
   MSG Msg;
 
+  // Import ComCtl32.dll
   InitCommonControls();
+
+  // Set locale
+  _wsetlocale(LC_ALL, L"en-US");
 
   // Allow and allocate conhost
   if (!AllocConsole()) {
-    constexpr int return_code = 1;
-    return handleReturnCode(return_code);
+    return handleReturnCode(FAIL);
   }
   // File handler pointer to a dummy file, possibly an actual logfile
   FILE* fNonExistFile = fDummyFile;
@@ -256,46 +457,66 @@ int WINAPI wWinMain(HINSTANCE hInstance,
   if (RegisterMainClass(g_hInstance) == kRegClassErr) {
     MessageBox(NULL, _T("Window Registration Failed!"), _T("Error!"),
                MB_ICONEXCLAMATION | MB_OK);
-    constexpr int return_code = STATUS_BAD;
-    return handleReturnCode(return_code);
+    return handleReturnCode(FAIL);
   }
 
   // Perform application initialization:
   if (!InitInstance(g_hInstance, nCmdShow)) {
     MessageBox(NULL, _T("Window Creation Failed!"), _T("Error!"),
                MB_ICONEXCLAMATION | MB_OK);
-    constexpr int return_code = STATUS_BAD;
-    return handleReturnCode(return_code);
+    return handleReturnCode(FAIL);
   } else {
-    //std::wcout << "Welcome to PiCalc-Win v." << getVersionString() << std::endl;
+    std::wcout << "Welcome to PiCalc-Win v." << getVersionString() << std::endl;
     HWND printHwnd = getMainHwnd();
-    //std::wcout << "getMainHwnd() reported " << printHwnd << std::endl;
-    mpf_set_default_prec(GMP_PRECISION);
-    mpf_class pi;
-    algorithms::compute_pi_chudnovsky(pi);
-
-    //std::wcout << std::setprecision(MAX_LOADSTRING) << L"algorithms::chudnovsky = " << algorithms::chudnovsky(max_iterations) << ENDL;
-    //std::cout << std::setprecision(DIGITS) << "compute_pi_chudnovsky to PRECISION " << PRECISION << " equals: " << pi << std::endl;
-    std::cout << std::setprecision(DIGITS) << "Pi to 1024 digits is: \n" << pi << std::endl;
+    std::wcout << "getMainHwnd() reported " << printHwnd << std::endl;
   }
 
   // And the child window class
   if (!SetUpMDIChildWindowClass(g_hInstance)) {
-    constexpr int return_code = STATUS_BAD;
-    return handleReturnCode(return_code);
+    return handleReturnCode(FAIL);
   }
 
-  while (GetMessage(&Msg, NULL, 0, 0) > 0) {
-    if (!TranslateMDISysAccel(g_hMDIClient, &Msg)) {
+  // Load  keyboard shortcuts
+  HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_MAINMENU));
+
+#ifndef COMPONENT_BUILD
+  std::wcout << L"static libpicalc call" << std::endl;;
+#else
+  std::wcout << L"shared DLL libpicalc call" << std::endl;;
+  HMODULE hPiDll;
+  hPiDll = LoadLibraryW(kPiCalcDll);
+  if (!hPiDll || hPiDll == NULL) {
+    MessageBoxW(NULL, L"Failed to load libpicalc.dll", L"Error loading DLL",
+               MB_ICONERROR | MB_OK);
+    handleReturnCode(FAIL);
+  } else {
+    std::wcout << L"Successfully loaded " << kPiCalcDll << std::endl;
+  }
+#endif // COMPONENT_BUILD
+
+  printPiForTesting();
+
+  while (GetMessage(&Msg, nullptr, 0, 0) > 0) {
+    if (!TranslateAccelerator(g_hMainWindow, hAccelTable, &Msg)) {
       TranslateMessage(&Msg);
       DispatchMessage(&Msg);
     }
   }
+
   const UINT_PTR result = Msg.wParam;
   const unsigned int uiResult = result;
   const int kMessageResult = static_cast<int>(uiResult);
-  if (kMessageResult == STATUS_GOOD) {
-    return STATUS_GOOD;
+
+  if (!FreeLibrary(hPiDll)) {
+    MessageBoxW(NULL, L"Failed to free libpicalc.dll", L"Error freeing DLL",
+               MB_ICONERROR | MB_OK);
+    handleReturnCode(FAIL);
+  } else {
+    std::wcout << L"Successfully freed library " << kPiCalcDll << std::endl;
+  }
+
+  if (kMessageResult == SUCC) {
+    return SUCC;
   }
   return handleReturnCode(kMessageResult);
 }

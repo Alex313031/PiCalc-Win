@@ -15,15 +15,15 @@
 
 // These next few lines are where we control version number and copyright year
 // Adhere to semver > semver.org
-#define MAJOR_VERSION 1
-#define MINOR_VERSION 9
-#define BUILD_VERSION 9
+#define MAJOR_VERSION 2
+#define MINOR_VERSION 0
+#define BUILD_VERSION 0
 
 #ifndef VERSION_STRING
 #define VERSION_STRING _VERSION(MAJOR_VERSION, MINOR_VERSION, BUILD_VERSION)
 #endif
 
-#define ABOUT_VERSION "PiCalc-Win ver. 1.9.9"
+#define ABOUT_VERSION "PiCalc-Win ver. 2.0.0"
 #define ABOUT_COPYRIGHT "Copyright © 2025 Alex313031"
 #define LEGAL_COPYRIGHT "© 2025 Alex313031 (BSD-3)"
 
