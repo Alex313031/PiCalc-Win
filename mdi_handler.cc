@@ -8,7 +8,7 @@
 
 HWND g_hMDIClient = NULL;
 
-BOOL LoadTextFileToEdit(HWND hEdit, LPCTSTR pszFileName) {
+BOOL LoadTextFileToEdit(HWND hEdit, LPCWSTR pszFileName) {
   HANDLE hFile;
   BOOLEAN bSuccess = FALSE;
 
@@ -19,9 +19,9 @@ BOOL LoadTextFileToEdit(HWND hEdit, LPCTSTR pszFileName) {
 
     dwFileSize = GetFileSize(hFile, NULL);
     if (dwFileSize != 0xFFFFFFFF) {
-      LPTSTR pszFileText;
+      LPWSTR pszFileText;
 
-      pszFileText = (LPTSTR)GlobalAlloc(GPTR, dwFileSize + 1);
+      pszFileText = (LPWSTR)GlobalAlloc(GPTR, dwFileSize + 1);
       if (pszFileText != NULL) {
         DWORD dwRead;
 
@@ -47,16 +47,16 @@ void DoFileOpen(HWND hwnd) {
 
   ofn.lStructSize = sizeof(ofn);
   ofn.hwndOwner = hwnd;
-  ofn.lpstrFilter = _T("Text Files (*.txt)\0*.txt\0All Files (*.*)\0*.*\0");
+  ofn.lpstrFilter = L"Text Files (*.txt)\0*.txt\0All Files (*.*)\0*.*\0";
   ofn.lpstrFile = szFileName;
   ofn.nMaxFile = MAX_PATH;
   ofn.Flags = OFN_EXPLORER | OFN_FILEMUSTEXIST | OFN_HIDEREADONLY;
-  ofn.lpstrDefExt = _T("txt");
+  ofn.lpstrDefExt = L"txt";
   if (GetOpenFileName(&ofn)) {
     HWND hEdit = GetDlgItem(hwnd, IDC_CHILD_EDIT);
     if (LoadTextFileToEdit(hEdit, szFileName)) {
       SendDlgItemMessage(g_hMainWindow, IDC_MAIN_STATUS, SB_SETTEXT, 0,
-                         (LPARAM)_T("Opened..."));
+                         (LPARAM)L"Opened...");
       SendDlgItemMessage(g_hMainWindow, IDC_MAIN_STATUS, SB_SETTEXT, 1,
                          (LPARAM)szFileName);
 
@@ -78,7 +78,7 @@ HWND CreateNewMDIChild(HWND hMDIClient) {
 
   hChild = (HWND)SendMessage(hMDIClient, WM_MDICREATE, 0, (LONG_PTR)&mcs);
   if (!hChild || hChild ==  NULL) {
-    MessageBox(hMDIClient, _T("MDI Child creation failed."), _T("Uh Oh..."),
+    MessageBox(hMDIClient, L"MDI Child creation failed.", L"Uh Oh...",
                MB_ICONEXCLAMATION | MB_OK);
   }
   return hChild;

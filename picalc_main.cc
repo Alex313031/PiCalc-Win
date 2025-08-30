@@ -14,7 +14,7 @@ HINSTANCE g_hInstance = NULL;
 
 HWND g_hMainWindow = NULL;
 
-BOOL SaveTextFileFromEdit(HWND hEdit, LPCTSTR pszFileName) {
+BOOL SaveTextFileFromEdit(HWND hEdit, LPCWSTR pszFileName) {
   HANDLE hFile;
   BOOLEAN bSuccess = FALSE;
 
@@ -26,10 +26,10 @@ BOOL SaveTextFileFromEdit(HWND hEdit, LPCTSTR pszFileName) {
     dwTextLength = GetWindowTextLength(hEdit);
     // No need to bother if there's no text.
     if (dwTextLength > 0) {
-      LPTSTR pszText;
+      LPWSTR pszText;
       DWORD dwBufferSize = dwTextLength + 1;
 
-      pszText = (LPTSTR)GlobalAlloc(GPTR, dwBufferSize);
+      pszText = (LPWSTR)GlobalAlloc(GPTR, dwBufferSize);
       if (pszText != NULL) {
         if (GetWindowText(hEdit, pszText, dwBufferSize)) {
           DWORD dwWritten;
@@ -54,10 +54,10 @@ void DoFileSave(HWND hwnd) {
 
   ofn.lStructSize = sizeof(ofn);
   ofn.hwndOwner = hwnd;
-  ofn.lpstrFilter = _T("Text Files (*.txt)\0*.txt\0All Files (*.*)\0*.*\0");
+  ofn.lpstrFilter = L"Text Files (*.txt)\0*.txt\0All Files (*.*)\0*.*\0";
   ofn.lpstrFile = szFileName;
   ofn.nMaxFile = MAX_PATH;
-  ofn.lpstrDefExt = _T("txt");
+  ofn.lpstrDefExt = L"txt";
   ofn.Flags =
       OFN_EXPLORER | OFN_PATHMUSTEXIST | OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT;
 
@@ -65,7 +65,7 @@ void DoFileSave(HWND hwnd) {
     HWND hEdit = GetDlgItem(hwnd, IDC_CHILD_EDIT);
     if (SaveTextFileFromEdit(hEdit, szFileName)) {
       SendDlgItemMessage(g_hMainWindow, IDC_MAIN_STATUS, SB_SETTEXT, 0,
-                         (LPARAM)_T("Saved..."));
+                         (LPARAM)L"Saved...");
       SendDlgItemMessage(g_hMainWindow, IDC_MAIN_STATUS, SB_SETTEXT, 1,
                          (LPARAM)szFileName);
 
@@ -84,13 +84,13 @@ LRESULT CALLBACK MDIChildWndProcOld(HWND hwnd,
       HWND hEdit = NULL;
 
       // Create Edit Control
-      hEdit = CreateWindowEx(WS_EX_CLIENTEDGE, _T("EDIT"), _T(""),
+      hEdit = CreateWindowEx(WS_EX_CLIENTEDGE, L"EDIT", L"",
                              WS_CHILD | WS_VISIBLE | WS_VSCROLL | WS_HSCROLL |
                                  ES_MULTILINE | ES_AUTOVSCROLL | ES_AUTOHSCROLL,
                              0, 0, 100, 100, hwnd, (HMENU)IDC_CHILD_EDIT,
                              GetModuleHandle(NULL), NULL);
       if (!hEdit || hEdit == NULL) {
-        MessageBox(hwnd, _T("Could not create edit box."), _T("Error"),
+        MessageBox(hwnd, L"Could not create edit box.", L"Error",
                    MB_OK | MB_ICONERROR);
       }
 
@@ -173,7 +173,7 @@ BOOL SetUpMDIChildWindowClass(HINSTANCE hInstance) {
   mdiwc.hIconSm = LoadIcon(mdiwc.hInstance, MAKEINTRESOURCE(IDI_SMALL));
 
   if (!RegisterClassEx(&mdiwc)) {
-    MessageBox(0, _T("Could not register MDIChild Window"), _T("Uh Oh..."),
+    MessageBox(0, L"Could not register MDIChild Window", L"Uh Oh...",
                MB_ICONEXCLAMATION | MB_OK);
     return FALSE;
   } else {
@@ -236,13 +236,13 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) 
 
       // Create MDI Client
       hChildWin = CreateWindowEx(
-          WS_EX_CLIENTEDGE, _T("mdiclient"), NULL,
+          WS_EX_CLIENTEDGE, L"mdiclient", NULL,
           WS_CHILD | WS_CLIPCHILDREN | WS_VSCROLL | WS_HSCROLL | WS_VISIBLE,
           CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, hwnd,
           (HMENU)IDC_MAIN_MDI, GetModuleHandle(NULL), (LPVOID)&ccs);
 
       if (!hChildWin || hChildWin == NULL) {
-        MessageBox(hwnd, _T("Could not create MDI client."), _T("Error"),
+        MessageBox(hwnd, L"Could not create MDI client.", L"Error",
                    MB_OK | MB_ICONERROR);
       } else {
         g_hMDIClient = hChildWin;
@@ -253,7 +253,7 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) 
                              0, 0, 0, 0, hwnd, (HMENU)IDC_MAIN_TOOL,
                              GetModuleHandle(NULL), NULL);
       if (!hTool || hTool == NULL) {
-        MessageBox(hwnd, _T("Could not create tool bar."), _T("Error"),
+        MessageBox(hwnd, L"Could not create tool bar.", L"Error",
                    MB_OK | MB_ICONERROR);
       }
 
@@ -291,7 +291,7 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) 
 
       SendMessage(hStatus, SB_SETPARTS, sizeof(statwidths) / sizeof(int),
                   (LPARAM)statwidths);
-      SendMessage(hStatus, SB_SETTEXT, 0, (LPARAM)_T("Status"));
+      SendMessage(hStatus, SB_SETTEXT, 0, (LPARAM)L"Status");
     } break;
     case WM_SIZE: {
       HWND hTool;
@@ -456,9 +456,9 @@ void printPiForTesting() {
 }
 
 int WINAPI wWinMain(HINSTANCE hInstance,
-                     HINSTANCE hPrevInstance,
-                     LPTSTR lpCmdLine,
-                     int nCmdShow) {
+                    HINSTANCE hPrevInstance,
+                    LPWSTR lpCmdLine,
+                    int nCmdShow) {
   UNREFERENCED_PARAMETER(hPrevInstance);
   /* Assign global HINSTANCE */
   g_hInstance = hInstance;
@@ -481,14 +481,14 @@ int WINAPI wWinMain(HINSTANCE hInstance,
 
   // Register the window class
   if (RegisterMainClass(g_hInstance) == kRegClassErr) {
-    MessageBox(NULL, _T("Window Registration Failed!"), _T("Error!"),
+    MessageBox(NULL, L"Window Registration Failed!", L"Error!",
                MB_ICONEXCLAMATION | MB_OK);
     return handleReturnCode(FAIL);
   }
 
   // Perform application initialization:
   if (!InitInstance(g_hInstance, nCmdShow)) {
-    MessageBox(NULL, _T("Window Creation Failed!"), _T("Error!"),
+    MessageBox(NULL, L"Window Creation Failed!", L"Error!",
                MB_ICONEXCLAMATION | MB_OK);
     return handleReturnCode(FAIL);
   } else {

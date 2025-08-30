@@ -15,7 +15,7 @@ const WCHAR g_szChildClassName[] = L"PiCalcMDIWndClass";
 const LPCWSTR szEmptyFileName = L"[Untitled]";
 
 /* Function Definitions */
-BOOL LoadTextFileToEdit(HWND hEdit, LPCTSTR pszFileName);
+BOOL LoadTextFileToEdit(HWND hEdit, LPCWSTR pszFileName);
 
 void DoFileOpen(HWND hwnd);
 

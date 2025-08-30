@@ -18,10 +18,10 @@ static WORD kRegClassErr = 0;
 static const LPCWSTR kPiCalcDll = L"libpicalc.dll";
 
 // Main window class
-const TCHAR g_szClassName[] = _T("PiCalcWndClass");
+const WCHAR g_szClassName[] = L"PiCalcWndClass";
 
 // Main window title
-static const LPCTSTR lpszWindowTitle = _T("PiCalc-Win");
+static const LPCWSTR lpszWindowTitle = L"PiCalc-Win";
 
 /* Function Definitions */
 
