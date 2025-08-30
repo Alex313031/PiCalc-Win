@@ -130,26 +130,26 @@ mpf_class mpf_pi_chudnovsky() {
 
 COMPONENT_EXPORT
 bool oss_pi_chudnovsky(std::ostringstream &osspi) {
-  bool success;
+  bool pi_success;
   mpf_set_default_prec(GMP_PRECISION);
   std::ostringstream result;
   mpf_class pi = 0.0;
   if (compute_pi_chudnovsky(pi)) {
     result << std::fixed << std::setprecision(DIGITS) << pi;
     osspi << result.str();
-    success = true;
+    pi_success = true;
   } else {
-    success = false;
+    pi_success = false;
   }
-  static const bool retval = success && pi != 0.0;
-  if (!retval) {
+  static const bool success = pi_success && pi != 0.0;
+  if (!success) {
     // Clear the ostringstream
     result.str("");  // Clear the content
     result.clear();  // Clear any error flags
     result << __FUNC__ << "() Failed! ";
     osspi << result.str();
   }
-  return retval;
+  return success;
 }
 
 COMPONENT_EXPORT
