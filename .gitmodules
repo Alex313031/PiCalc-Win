@@ -1,0 +1,3 @@
+[submodule "libpicalc/gmp"]
+	path = libpicalc/gmp
+	url = https://github.com/Alex313031/gmp-ninja.git
