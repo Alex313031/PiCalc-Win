@@ -62,8 +62,8 @@ shared_library("libpicalc") {
 
   public_deps = [ "//src/picalc_win/libpicalc/gmp:gmp_headers" ]
   public_deps += [
-    "//src/picalc_win/libpicalc/gmp/gmp:gmp",
-    "//src/picalc_win/libpicalc/gmp/gmp:gmpxx"
+    "//src/picalc_win/libpicalc/gmp:gmp",
+    "//src/picalc_win/libpicalc/gmp:gmpxx"
   ]
 }
 
@@ -86,8 +86,8 @@ static_library("libpicalc_static") {
 
   public_deps = [ "//src/picalc_win/libpicalc/gmp:gmp_headers" ]
   public_deps += [
-    "//src/picalc_win/libpicalc/gmp/gmp:gmp",
-    "//src/picalc_win/libpicalc/gmp/gmp:gmpxx"
+    "//src/picalc_win/libpicalc/gmp:gmp",
+    "//src/picalc_win/libpicalc/gmp:gmpxx"
   ]
 }
 
@@ -107,13 +107,21 @@ source_set("libpicalc_sources") {
 
 config("libpicalc_config") {
   configs = []
-  configs += [ "//src/picalc_win:nt5", ]
   # Must explicitly set this for sources
   configs += [ "//build/config/win:windowed", ]
 
   configs += [
-    #":precompiled",
+    ":libpicalc_nt5",
+    ":precompiled",
     #":libgmp_prebuilt"
     #":libgmp"
+  ]
+}
+
+config("libpicalc_nt5") {
+  libs = [
+    "iphlpapi.lib",
+    "powrprof.lib",
+    "wtsapi32.lib"
   ]
 }

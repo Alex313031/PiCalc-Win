@@ -14,7 +14,7 @@ executable("picalc_win") {
   ]
 }
 
-config("nt5") {
+config("picalc_nt5") {
   libs = [
     "iphlpapi.lib",
     "powrprof.lib",
@@ -36,7 +36,7 @@ source_set("picalc_sources") {
   # Must explicitly set this for sources
   configs += [ "//build/config/win:windowed", ]
 
-  configs += [ ":nt5", ]
+  configs += [ ":picalc_nt5", ]
 
   configs += [
     "//src/picalc_win/libpicalc:precompiled",
@@ -70,7 +70,7 @@ source_set("picalc_sources") {
   }
 
   public_deps = [
-    "//src/picalc_win/libpicalc/gmp/gmp:gmp",
-    "//src/picalc_win/libpicalc/gmp/gmp:gmpxx"
+    "//src/picalc_win/libpicalc/gmp:gmp",
+    "//src/picalc_win/libpicalc/gmp:gmpxx"
   ]
 }
