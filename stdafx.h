@@ -63,7 +63,9 @@
 // C++17 or higher
 #if __cplusplus >= 201703L
  // To be able to use <codecvts>
- #define _SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING
+ #ifndef _SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING
+  #define _SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING
+ #endif
  #include <optional>// Useful like nullopt below
 #endif
 

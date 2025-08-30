@@ -1,14 +1,6 @@
-# Copyright 2014 The Chromium Authors. All rights reserved.
-# Use of this source code is governed by a BSD-style license that can be
-# found in the LICENSE file.
-
-import("//build/config/precompiled_header.gni")
-
-# Ensure precompiled headers work
-precompiled_header("precompiled") {
-  precompiled_header = "stdafx.h"
-  precompiled_source = "stdafx.cc"
-}
+# libpicalc
+# Provides a static library or dynamic .dll that exports many functions to compute Pi.
+# It supports a variety of algorithms and uses the GMP library for math.
 
 config("libgmp_prebuilt") {
   libs = []
@@ -60,10 +52,9 @@ shared_library("libpicalc") {
   ]
   #deps = [ ":libpicalc_sources" ]
 
-  public_deps = [ "//src/picalc_win/libpicalc/gmp:gmp_headers" ]
-  public_deps += [
-    "//src/picalc_win/libpicalc/gmp:gmp",
-    "//src/picalc_win/libpicalc/gmp:gmpxx"
+  public_deps = [
+    "//src/picalc_win/libpicalc/gmp:gmp_headers",
+    "//src/picalc_win/libpicalc/gmp:gmp_static"
   ]
 }
 
@@ -84,10 +75,9 @@ static_library("libpicalc_static") {
   ]
   #deps = [ ":libpicalc_sources" ]
 
-  public_deps = [ "//src/picalc_win/libpicalc/gmp:gmp_headers" ]
-  public_deps += [
-    "//src/picalc_win/libpicalc/gmp:gmp",
-    "//src/picalc_win/libpicalc/gmp:gmpxx"
+  public_deps = [
+    "//src/picalc_win/libpicalc/gmp:gmp_headers",
+    "//src/picalc_win/libpicalc/gmp:gmp_static"
   ]
 }
 
@@ -112,9 +102,6 @@ config("libpicalc_config") {
 
   configs += [
     ":libpicalc_nt5",
-    ":precompiled",
-    #":libgmp_prebuilt"
-    #":libgmp"
   ]
 }
 

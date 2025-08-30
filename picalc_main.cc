@@ -415,17 +415,43 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow) {
 }
 
 void printPiForTesting() {
+  bool oss_success = false;
+  bool woss_success = false;
   std::ostringstream osspi;
+  std::wostringstream wosspi;
   if (oss_pi_chudnovsky(osspi)) {
-    std::cout << "oss_pi_chudnovsky(osspi) = " << std::fixed << std::setprecision(1000) << osspi.str() << std::endl;
-    std::wostringstream wosspi;
-    woss_pi_chudnovsky(wosspi);
-    std::wcout << L"woss_pi_chudnovsky(wosspi) = " << wosspi.str() << std::endl;
-    wchar_t wpi;
-    wpi_chudnovsky(wpi);
-    std::wcout << L"wpi_chudnovsky() = " << wpi << std::endl;
-  } else {
-    std::wcout << __func__ << L" Failed" << std::endl;
+    oss_success = true;
+  }
+  if (woss_pi_chudnovsky(wosspi)){
+    woss_success = true;
+  }
+  std::cout << std::endl;
+  std::cout << "oss_pi_chudnovsky = " << std::fixed << std::setprecision(1000) << osspi.str()
+                                      << "\n" << std::endl;
+  std::wcout << L"woss_pi_chudnovsky = " << wosspi.str() << L"\n" << std::endl;
+
+  std::wstring* wstring_pi = wstring_pi_chudnovsky();
+  std::wcout << L"wstring_pi_chudnovsky = " << wstring_pi->c_str() << L"\n" << std::endl;
+  wstring_pi = nullptr;
+
+  std::string* string_pi = string_pi_chudnovsky();
+  std::cout << "string_pi_chudnovsky = " << string_pi->c_str() << "\n" << std::endl;
+  string_pi = nullptr;
+
+  char* char_pi = char_pi_chudnovsky();
+  std::cout << "char_pi_chudnovsky = " << char_pi_chudnovsky() << "\n" << std::endl;
+  delete[] char_pi;
+  char_pi = nullptr;
+
+  wchar_t* wchar_pi = wchar_pi_chudnovsky();
+  std::wcout << L"wchar_pi_chudnovsky = " << wchar_pi_chudnovsky() << L"\n" << std::endl;
+  delete[] wchar_pi;
+  wchar_pi = nullptr;
+
+  static const bool success =
+      oss_success && woss_success;
+  if (!success) {
+    std::wcout << __func__ << L" Failed at one or more steps" << std::endl;
   }
 }
 

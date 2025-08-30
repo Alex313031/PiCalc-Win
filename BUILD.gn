@@ -1,7 +1,10 @@
-import("//build/config/win/manifest.gni")
-import("//build/config/static_shared.gni")
+# PiCalc-Win
 
-# MDI GUI App
+import("//build/config/precompiled_header.gni")
+import("//build/config/static_shared.gni")
+import("//build/config/win/manifest.gni")
+
+# MDI GUI Pi Calculator App
 executable("picalc_win") {
   configs -= [ "//build/config/win:console", ]
   configs -= [ "//build/config/win:nominmax", ]
@@ -14,20 +17,10 @@ executable("picalc_win") {
   ]
 }
 
-config("picalc_nt5") {
-  libs = [
-    "iphlpapi.lib",
-    "powrprof.lib",
-    "wtsapi32.lib"
-  ]
-}
-
-windows_manifest("picalc_win_manifest") {
-  sources = [ as_invoker_manifest, ]
-
-  if (use_common_controls) {
-    sources += [ common_controls_manifest, ]
-  }
+# Precompiled header for common C/C++ stdlib stuff
+precompiled_header("precompiled") {
+  precompiled_header = "stdafx.h"
+  precompiled_source = "stdafx.cc"
 }
 
 source_set("picalc_sources") {
@@ -36,10 +29,9 @@ source_set("picalc_sources") {
   # Must explicitly set this for sources
   configs += [ "//build/config/win:windowed", ]
 
-  configs += [ ":picalc_nt5", ]
-
   configs += [
-    "//src/picalc_win/libpicalc:precompiled",
+    ":picalc_nt5",
+    ":precompiled"
   ]
 
   sources = [
@@ -68,9 +60,21 @@ source_set("picalc_sources") {
       "//src/picalc_win/libpicalc:libpicalc_static"
     ]
   }
+}
 
-  public_deps = [
-    "//src/picalc_win/libpicalc/gmp:gmp",
-    "//src/picalc_win/libpicalc/gmp:gmpxx"
+# Libs to support NT 5.x
+config("picalc_nt5") {
+  libs = [
+    "iphlpapi.lib",
+    "powrprof.lib",
+    "wtsapi32.lib"
   ]
+}
+
+windows_manifest("picalc_win_manifest") {
+  sources = [ as_invoker_manifest, ]
+
+  if (use_common_controls) {
+    sources += [ common_controls_manifest, ]
+  }
 }

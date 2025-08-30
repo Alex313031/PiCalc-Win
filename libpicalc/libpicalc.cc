@@ -45,7 +45,7 @@ mpf_class factorial(int n) {
 }
 
 bool compute_pi_chudnovsky(mpf_class &pi) {
-  bool success = false;
+  bool success;
   mpf_set_default_prec(GMP_PRECISION);
 
   const mpf_class C = 426880.0 * sqrt(mpf_class(10005.0));
@@ -61,21 +61,21 @@ bool compute_pi_chudnovsky(mpf_class &pi) {
     mpf_class b = 13591409.0 + 545140134.0 * k;
     num = a * b;
 
-      // Denominator: (3k)! * (k!)^3 * 640320^(3k)
-      mpf_class c = factorial(3 * k);
-      mpf_class d = factorial(k);
-      d = d * d * d;
-      mpf_class e;
-      mpf_pow_ui(e.get_mpf_t(), mpf_class(640320.0).get_mpf_t(), 3 * k);
+    // Denominator: (3k)! * (k!)^3 * 640320^(3k)
+    mpf_class c = factorial(3 * k);
+    mpf_class d = factorial(k);
+    d = d * d * d;
+    mpf_class e;
+    mpf_pow_ui(e.get_mpf_t(), mpf_class(640320.0).get_mpf_t(), 3 * k);
 
-      den = c * d * e;
+    den = c * d * e;
 
-      term = num / den;
-      if (k % 2 != 0) {
-        term = -term;
-      }
+    term = num / den;
+    if (k % 2 != 0) {
+      term = -term;
+    }
 
-      sum += term;
+    sum += term;
   }
   mpf_class pi_result = 0.0;
   pi_result = C / sum;
@@ -130,34 +130,82 @@ mpf_class mpf_pi_chudnovsky() {
 
 COMPONENT_EXPORT
 bool oss_pi_chudnovsky(std::ostringstream &osspi) {
+  bool success;
   mpf_set_default_prec(GMP_PRECISION);
   std::ostringstream result;
-  mpf_class pi;
-  compute_pi_chudnovsky(pi);
-  result << std::fixed << std::setprecision(DIGITS) << pi;
-  osspi << result.str();
-  return true;
+  mpf_class pi = 0.0;
+  if (compute_pi_chudnovsky(pi)) {
+    result << std::fixed << std::setprecision(DIGITS) << pi;
+    osspi << result.str();
+    success = true;
+  } else {
+    success = false;
+  }
+  static const bool retval = success && pi != 0.0;
+  if (!retval) {
+    // Clear the ostringstream
+    result.str("");  // Clear the content
+    result.clear();  // Clear any error flags
+    result << __FUNC__ << "() Failed! ";
+    osspi << result.str();
+  }
+  return retval;
 }
 
 COMPONENT_EXPORT
 bool woss_pi_chudnovsky(std::wostringstream &wosspi) {
+  bool success;
   std::ostringstream osspi;
-  oss_pi_chudnovsky(osspi);
-  std::string pistring = osspi.str();
-  std::wstring_convert<std::codecvt_utf8<wchar_t>> wconv;
-  std::wstring piout = wconv.from_bytes(pistring);
-  wosspi << piout;
-  return true;
+  if (oss_pi_chudnovsky(osspi)) {
+    success = true;
+  } else {
+    success = false;
+  }
+  if (osspi) {
+    std::string pistring = osspi.str();
+    std::wstring_convert<std::codecvt_utf8<wchar_t>> wconv;
+    std::wstring piout = wconv.from_bytes(pistring);
+    wosspi << piout;
+  }
+  return success;
 }
 
 COMPONENT_EXPORT
-bool wpi_chudnovsky(wchar_t &wcpi) {
+char* char_pi_chudnovsky() {
+  std::ostringstream osspi;
+  oss_pi_chudnovsky(osspi);
+  std::string str_pi = osspi.str();
+  size_t length = str_pi.size() + 1;
+  char* buffer = new char[length];
+  std::strcpy(buffer, str_pi.c_str());
+  return buffer; // caller must delete[] this
+}
+
+COMPONENT_EXPORT
+wchar_t* wchar_pi_chudnovsky() {
   std::wostringstream wosspi;
   woss_pi_chudnovsky(wosspi);
-  std::wstring wtest = wosspi.str();
-  wchar_t *wout = const_cast<wchar_t*>(wtest.c_str());
-  wcpi = *wout;
-  return true;
+  std::wstring ws_pi = wosspi.str();
+  size_t length = ws_pi.size() + 1;
+  wchar_t* buffer = new wchar_t[length];
+  std::wcscpy(buffer, ws_pi.c_str());
+  return buffer; // caller must delete[] this
+}
+
+COMPONENT_EXPORT
+std::string* string_pi_chudnovsky() {
+  std::ostringstream osspi;
+  oss_pi_chudnovsky(osspi);
+  std::string str_pi = osspi.str();
+  return new std::string(str_pi); // caller must delete this
+}
+
+COMPONENT_EXPORT
+std::wstring* wstring_pi_chudnovsky() {
+  std::wostringstream wosspi;
+  woss_pi_chudnovsky(wosspi);
+  std::wstring ws_pi = wosspi.str();
+  return new std::wstring(ws_pi); // caller must delete this
 }
 
 COMPONENT_EXPORT
