@@ -1,5 +1,6 @@
 //Microsoft Developer Studio generated resource script.
 //
+
 #include "resource.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
@@ -91,7 +92,7 @@ BEGIN
     END
     BLOCK "VarFileInfo"
     BEGIN
-        VALUE "Translation", 0x0, 1200
+        VALUE "Translation", 0x0409, 1200
     END
 END
 
@@ -203,12 +204,3 @@ END
 #endif    // APSTUDIO_INVOKED
 
 #endif    // English resources
-
-#ifndef APSTUDIO_INVOKED
-/////////////////////////////////////////////////////////////////////////////
-//
-// Generated from the TEXTINCLUDE 3 resource.
-//
-
-/////////////////////////////////////////////////////////////////////////////
-#endif    // not APSTUDIO_INVOKED

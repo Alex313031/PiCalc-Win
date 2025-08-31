@@ -31,7 +31,7 @@ shared_library("libpicalc") {
     "libpicalc.h",
     "libpicalc_dll.h",
     "libpicalc.rc",
-    "stdafx.h"
+    "version.h",
   ]
   #deps = [ ":libpicalc_sources" ]
 
@@ -54,7 +54,7 @@ static_library("static_libpicalc") {
     "libpicalc.h",
     "libpicalc_dll.h",
     "libpicalc.rc",
-    "stdafx.h"
+    "version.h",
   ]
   #deps = [ ":libpicalc_sources" ]
 
@@ -75,7 +75,8 @@ source_set("libpicalc_sources") {
     "libpicalc.cc",
     "libpicalc.h",
     "libpicalc_dll.h",
-    "libpicalc.rc"
+    "libpicalc.rc",
+    "version.h",
   ]
 }
 
