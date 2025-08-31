@@ -5,7 +5,7 @@
 #define APSTUDIO_READONLY_SYMBOLS
 /////////////////////////////////////////////////////////////////////////////
 //
-// Generated from the TEXTINCLUDE 2 resource.
+// Generated from the TEXTINCLUDE resource.
 //
 #define APSTUDIO_HIDDEN_SYMBOLS
 #include "windows.h"
@@ -21,10 +21,12 @@
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENC)
 // #pragma code_page(1252) // Traditional Windows ANSI codepage
 // LANGUAGE 9, 1 // ENG_US
-//LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
-//#pragma code_page(65001) // UTF-8
+// LANGUAGE LANG_NEUTRAL, SUBLANG_DEFAULT
+#pragma code_page(65001) // UTF-8
+LANGUAGE LANG_ENGLISH, SUBLANG_NEUTRAL
 
 #ifdef APSTUDIO_INVOKED
+
 /////////////////////////////////////////////////////////////////////////////
 //
 // TEXTINCLUDE
@@ -171,19 +173,19 @@ END
 
 /////////////////////////////////////////////////////////////////////////////
 //
-// Dialog
+// About Dialog
 //
 
-IDD_ABOUT DIALOGEX 0, 0, 147, 67
+IDD_ABOUT DIALOGEX 3, 4, 147, 67
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "About PiCalc-Win"
-CHARACTERISTICS 17062
+CAPTION ABOUT_TITLE
+CHARACTERISTICS 314
 FONT 8, "MS Shell Dlg"
 BEGIN
     ICON            IDI_PICALC, IDC_STATIC, 7, 7, 20, 20, SS_ICON
-    LTEXT           ABOUT_VERSION, IDC_STATIC, 34, 7, 98, 8
-    LTEXT           ABOUT_COPYRIGHT, IDC_STATIC, 34, 17, 86, 8
-    DEFPUSHBUTTON   "OK", IDOK, 90, 46, 50, 14, WS_GROUP
+    LTEXT           ABOUT_VERSION, IDC_STATIC, 34, 7, 98, 8, SS_NOPREFIX
+    LTEXT           ABOUT_COPYRIGHT, IDC_STATIC, 34, 17, 98, 8
+    DEFPUSHBUTTON   L"OK", IDOK, 90, 46, 50, 14, WS_GROUP
 END
 
 /////////////////////////////////////////////////////////////////////////////

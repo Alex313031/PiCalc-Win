@@ -1,5 +1,7 @@
-#ifndef VERSION_H
-#define VERSION_H
+#ifndef PICALC_VERSION_H_
+#define PICALC_VERSION_H_
+
+#pragma code_page(65001) // UTF-8
 
 // Macro to convert to string
 #if !defined(_STRINGIZER) && !defined(STRINGIZE)
@@ -21,10 +23,10 @@
 
 #ifndef VERSION_STRING
 #define VERSION_STRING _VERSION(MAJOR_VERSION, MINOR_VERSION, BUILD_VERSION)
+#define ABOUT_TITLE L"About PiCalc-Win"
+#define ABOUT_VERSION L"PiCalc-Win ver. 2.0.1"
+#define ABOUT_COPYRIGHT L"Copyright © 2025 Alex313031"
+#define LEGAL_COPYRIGHT L"© 2025 Alex313031 (BSD-3)"
 #endif
 
-#define ABOUT_VERSION "PiCalc-Win ver. 2.0.1"
-#define ABOUT_COPYRIGHT "Copyright © 2025 Alex313031"
-#define LEGAL_COPYRIGHT "© 2025 Alex313031 (BSD-3)"
-
-#endif // VERSION_H
+#endif // PICALC_VERSION_H_

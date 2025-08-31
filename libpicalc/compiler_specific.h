@@ -127,17 +127,18 @@
  #endif
 #endif // PRETTY_FUNCTION
 
-// Bool to be used externally to test if DCHECK is on
+// Define DCHECK indirectly
 #if defined(IS_DCHECK)
- #ifndef DCHECK
-  #define DCHECK 1
- #endif
+ #define DCHECK 1
+#else
+ #define DCHECK 0
 #endif
 
+// Internal bool to be used externally to test if DCHECK is on
 constexpr bool is_dcheck = DCHECK == 1;
 
-// Same as above but for DEBUG/NDEBUG
-#if defined DEBUG || defined _DEBUG
+// Internal bool to check debug defines
+#if defined(DEBUG) && !defined(NDEBUG)
  constexpr bool is_debug = true;
 #else
  constexpr bool is_debug = false;

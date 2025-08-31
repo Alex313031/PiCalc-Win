@@ -5,7 +5,7 @@
 #define APSTUDIO_READONLY_SYMBOLS
 /////////////////////////////////////////////////////////////////////////////
 //
-// Generated from the TEXTINCLUDE 2 resource.
+// Generated from the TEXTINCLUDE resource.
 //
 #define APSTUDIO_HIDDEN_SYMBOLS
 #include "windows.h"
@@ -21,10 +21,12 @@
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENC)
 // #pragma code_page(1252) // Traditional Windows ANSI codepage
 // LANGUAGE 9, 1 // ENG_US
-LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
+// LANGUAGE LANG_NEUTRAL, SUBLANG_DEFAULT
 #pragma code_page(65001) // UTF-8
+LANGUAGE LANG_ENGLISH, SUBLANG_NEUTRAL
 
 #ifdef APSTUDIO_INVOKED
+
 /////////////////////////////////////////////////////////////////////////////
 //
 // TEXTINCLUDE
@@ -61,17 +63,16 @@ VS_VERSION_INFO VERSIONINFO
  FILEVERSION MAJOR_VERSION, MINOR_VERSION, BUILD_VERSION
  PRODUCTVERSION MAJOR_VERSION, MINOR_VERSION, BUILD_VERSION
  FILEFLAGSMASK 0x3fL
-#ifdef _DEBUG
+#if defined(DEBUG) && !defined(NDEBUG)
  FILEFLAGS VS_FF_DEBUG // 0x00000001L
 #else
  FILEFLAGS 0x00000000L // Normal?
 #endif
  // Windows NT
  FILEOS VOS_NT_WINDOWS32 // 0x00040004L
-#if defined(COMPONENT_BUILD)
+#if defined(COMPONENT_BUILD) || defined(INSIDE_DLL)
  FILETYPE VFT_DLL // 0x00000002L
-#endif
-#if !defined(COMPONENT_BUILD)
+#else
  FILETYPE VFT_STATIC_LIB // 0x00000007L
 #endif
 

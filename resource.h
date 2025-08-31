@@ -2,6 +2,8 @@
 // Microsoft Developer Studio generated include file.
 // Used by picalc_win.rc
 
+#pragma code_page(65001) // UTF-8
+
 #include "version.h"
 
 // Main resource IDs, typical values inferred from usage
