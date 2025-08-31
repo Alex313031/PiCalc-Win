@@ -6,10 +6,15 @@ import("//build/config/win/manifest.gni")
 
 # MDI GUI Pi Calculator App
 executable("picalc_win") {
-  configs -= [ "//build/config/win:console", ]
-  configs -= [ "//build/config/win:nominmax", ]
+  configs -= [
+    "//build/config/win:console",
+    "//build/config/win:nominmax",
+  ]
 
-  configs += [ "//build/config/win:windowed", ]
+  configs += [
+    "//build/config/win:windowed",
+    ":picalc_nt5",
+  ]
 
   deps = [
     ":picalc_sources",
@@ -53,7 +58,7 @@ source_set("picalc_sources") {
 
   if (is_component_build) {
     deps += [
-      "//src/picalc_win/libpicalc:libpicalc"
+      "//src/picalc_win/libpicalc:libpicalc_shared"
     ]
   } else {
     deps += [
@@ -77,4 +82,9 @@ windows_manifest("picalc_win_manifest") {
   if (use_common_controls) {
     sources += [ common_controls_manifest, ]
   }
+}
+
+group("picalc_test") {
+  testonly = true
+  deps = [ "//src/picalc_win/libpicalc:libpicalc_all" ]
 }
