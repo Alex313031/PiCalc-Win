@@ -1,0 +1,27 @@
+# OS/Arch
+target_os = "win"
+target_cpu = "x86"
+
+# Toolchain
+print_toolchain_info = false
+visual_studio_version = "2022"
+windows_sdk_version = "10.0.19041.0"
+is_clang = true
+use_lld = is_clang
+clang_base_path = "C:\repos\gn-build\tools\llvm\llvm_19.1.7_x64_win32"
+
+cpp_standard = 17
+
+# Debug/Release Settings
+is_debug = false
+is_official_build = true
+is_full_optimization_build = is_official_build
+symbol_level = 0
+enable_iterator_debugging = false
+iterator_debug_level = 0
+enable_lto = is_official_build
+use_thin_lto = is_official_build
+
+# Win32 Specific
+is_component_build = true # Build libpicalc as a .dll instead of static .lib
+use_dynamic_crt = false # Whether to use MSVC redist dlls instead of statically link CRT
