@@ -10,6 +10,22 @@
 #include "framework.h"
 #include "resource.h"
 
+// Easier line endings
+#ifndef ENDL
+ #define ENDL std::endl
+#endif // ENDL
+#ifndef NL
+ // Newline
+ #define NL "\n"
+ // "wide" newline
+ #define WNL L"\n"
+#endif // ENDL
+
+// Maximum .res loadstring length
+#ifndef MAX_LOADSTRING
+ #define MAX_LOADSTRING MAX_PATH // Traditionally 255
+#endif // MAX_LOADSTRING
+
 // Exit code defines
 #ifndef SUCCESS_CODE
  #define SUCCESS_CODE 0
@@ -31,6 +47,9 @@
 extern HWND getMainHwnd();
 extern HWND getChildHwnd();
 
+// Other common functions
+namespace common {
 std::wstring getVersionString();
+};
 
 #endif // COMMON_H_

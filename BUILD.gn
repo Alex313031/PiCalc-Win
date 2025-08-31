@@ -50,6 +50,7 @@ source_set("picalc_sources") {
     "mdi_handler.h",
     "picalc_main.cc",
     "picalc_main.h",
+    "picalc_test.cc",
     "picalc_win.rc",
     "resource.h"
   ]
@@ -77,7 +78,7 @@ config("picalc_nt5") {
 }
 
 windows_manifest("picalc_win_manifest") {
-  sources = [ as_invoker_manifest, ]
+  sources = [ as_invoker_manifest, unicode_manifest, ]
 
   if (use_common_controls) {
     sources += [ common_controls_manifest, ]

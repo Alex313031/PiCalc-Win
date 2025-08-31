@@ -1,8 +1,8 @@
 #include "picalc_main.h"
 
-#include "libpicalc/gmp/gmp.h"
-#include "libpicalc/gmp/gmpxx.h"
+#ifndef COMPONENT_BUILD
 #include "libpicalc/libpicalc_dll.h"
+#endif // COMPONENT_BUILD
 
 #include "common.h"
 #include "dialogs.h"
@@ -414,47 +414,6 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow) {
    return true;
 }
 
-void printPiForTesting() {
-  bool oss_success = false;
-  bool woss_success = false;
-  std::ostringstream osspi;
-  std::wostringstream wosspi;
-  if (oss_pi_chudnovsky(osspi)) {
-    oss_success = true;
-  }
-  if (woss_pi_chudnovsky(wosspi)){
-    woss_success = true;
-  }
-  std::cout << std::endl;
-  std::cout << "oss_pi_chudnovsky = " << std::fixed << std::setprecision(1000) << osspi.str()
-                                      << "\n" << std::endl;
-  std::wcout << L"woss_pi_chudnovsky = " << wosspi.str() << L"\n" << std::endl;
-
-  std::wstring* wstring_pi = wstring_pi_chudnovsky();
-  std::wcout << L"wstring_pi_chudnovsky = " << wstring_pi->c_str() << L"\n" << std::endl;
-  wstring_pi = nullptr;
-
-  std::string* string_pi = string_pi_chudnovsky();
-  std::cout << "string_pi_chudnovsky = " << string_pi->c_str() << "\n" << std::endl;
-  string_pi = nullptr;
-
-  char* char_pi = char_pi_chudnovsky();
-  std::cout << "char_pi_chudnovsky = " << char_pi_chudnovsky() << "\n" << std::endl;
-  delete[] char_pi;
-  char_pi = nullptr;
-
-  wchar_t* wchar_pi = wchar_pi_chudnovsky();
-  std::wcout << L"wchar_pi_chudnovsky = " << wchar_pi_chudnovsky() << L"\n" << std::endl;
-  delete[] wchar_pi;
-  wchar_pi = nullptr;
-
-  static const bool success =
-      oss_success && woss_success;
-  if (!success) {
-    std::wcout << __func__ << L" Failed at one or more steps" << std::endl;
-  }
-}
-
 int WINAPI wWinMain(HINSTANCE hInstance,
                     HINSTANCE hPrevInstance,
                     LPWSTR lpCmdLine,
@@ -492,7 +451,7 @@ int WINAPI wWinMain(HINSTANCE hInstance,
                MB_ICONEXCLAMATION | MB_OK);
     return handleReturnCode(FAIL);
   } else {
-    std::wcout << "Welcome to PiCalc-Win v." << getVersionString() << std::endl;
+    std::wcout << "Welcome to PiCalc-Win v." << common::getVersionString() << std::endl;
     HWND printHwnd = getMainHwnd();
     std::wcout << "getMainHwnd() reported " << printHwnd << std::endl;
   }
@@ -505,11 +464,12 @@ int WINAPI wWinMain(HINSTANCE hInstance,
   // Load  keyboard shortcuts
   HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_MAINMENU));
 
+  HMODULE hPiDll = NULL;
 #ifndef COMPONENT_BUILD
-  std::wcout << L"static libpicalc call" << std::endl;;
+  std::wcout << L"static libpicalc call" << std::endl;
+  printStaticPiForTesting();
 #else
-  std::wcout << L"shared DLL libpicalc call" << std::endl;;
-  HMODULE hPiDll;
+  std::wcout << L"shared libpicalc call" << std::endl;
   hPiDll = LoadLibraryW(kPiCalcDll);
   if (!hPiDll || hPiDll == NULL) {
     MessageBoxW(NULL, L"Failed to load libpicalc.dll", L"Error loading DLL",
@@ -517,10 +477,9 @@ int WINAPI wWinMain(HINSTANCE hInstance,
     handleReturnCode(FAIL);
   } else {
     std::wcout << L"Successfully loaded " << kPiCalcDll << std::endl;
+    printSharedPiForTesting(hPiDll);
   }
 #endif // COMPONENT_BUILD
-
-  printPiForTesting();
 
   while (GetMessage(&Msg, nullptr, 0, 0) > 0) {
     if (!TranslateAccelerator(g_hMainWindow, hAccelTable, &Msg)) {
@@ -533,12 +492,14 @@ int WINAPI wWinMain(HINSTANCE hInstance,
   const unsigned int uiResult = result;
   const int kMessageResult = static_cast<int>(uiResult);
 
-  if (!FreeLibrary(hPiDll)) {
-    MessageBoxW(NULL, L"Failed to free libpicalc.dll", L"Error freeing DLL",
-               MB_ICONERROR | MB_OK);
-    handleReturnCode(FAIL);
-  } else {
-    std::wcout << L"Successfully freed library " << kPiCalcDll << std::endl;
+  if (hPiDll && hPiDll != NULL) {
+    if (!FreeLibrary(hPiDll)) {
+      MessageBoxW(NULL, L"Failed to free libpicalc.dll", L"Error freeing DLL",
+                 MB_ICONERROR | MB_OK);
+      handleReturnCode(FAIL);
+    } else {
+      std::wcout << L"Successfully freed library " << kPiCalcDll << std::endl;
+    }
   }
 
   if (kMessageResult == SUCC) {

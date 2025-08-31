@@ -19,12 +19,12 @@
 // Adhere to semver > semver.org
 #define MAJOR_VERSION 2
 #define MINOR_VERSION 0
-#define BUILD_VERSION 1
+#define BUILD_VERSION 2
 
 #ifndef VERSION_STRING
 #define VERSION_STRING _VERSION(MAJOR_VERSION, MINOR_VERSION, BUILD_VERSION)
 #define ABOUT_TITLE L"About PiCalc-Win"
-#define ABOUT_VERSION L"PiCalc-Win ver. 2.0.1"
+#define ABOUT_VERSION L"PiCalc-Win ver. 2.0.2"
 #define ABOUT_COPYRIGHT L"Copyright © 2025 Alex313031"
 #define LEGAL_COPYRIGHT L"© 2025 Alex313031 (BSD-3)"
 #endif

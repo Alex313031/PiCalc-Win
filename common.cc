@@ -1,7 +1,7 @@
 #include "common.h"
 #include "resource.h"
 
-std::wstring getVersionString() {
+std::wstring common::getVersionString() {
   std::wstringstream VerStream;
   VerStream << MAJOR_VERSION
             << "."
