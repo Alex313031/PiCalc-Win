@@ -78,7 +78,7 @@ config("picalc_nt5") {
 }
 
 windows_manifest("picalc_win_manifest") {
-  sources = [ as_invoker_manifest, unicode_manifest, ]
+  sources = [ as_invoker_manifest ]
 
   if (use_common_controls) {
     sources += [ common_controls_manifest, ]
